@@ -38,26 +38,6 @@ function calcIsOpens(date = new Date(), places = app.places) {
     }
   });
 }
-function filterOpen(onlyOpen) {
-  console.log("only open:", onlyOpen);
-  app.places.forEach(e => {
-    if (onlyOpen) {
-      e.display = e.display && e.isOpen;
-    } else {
-      e.display = true;
-    }
-    if (e.display) {
-      if (!e.marker.map) {
-        e.marker.setMap(app.map);
-      }
-    } else {
-      //don't show it!
-      if (e.marker.map) {
-        e.marker.setMap(null);
-      }
-    }
-  });
-}
 function tohrmin(str) {
   str = str.toLowerCase();
   if (str == "midnight") {
