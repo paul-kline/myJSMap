@@ -88,7 +88,7 @@ let fooddata = [
     lat: 38.9540539,
     lng: -95.2588591,
     opens: "7:30pm,5:00pm,5:00pm,5:00pm,5:00pm,5:00pm,7:30pm",
-    closes: "12:00am, 12:00am,12:00am,12:00am,12:00am,12:00am,12:00am",
+    closes: "midnight, midnight,midnight,midnight,midnight,midnight,midnight",
     "": ""
   },
   {
@@ -214,7 +214,7 @@ let fooddata = [
     lat: 38.9544738,
     lng: -95.25937239999999,
     opens: "9:00am,7:00am,7:00am,7:00am,7:00am,7:00am,9:00am",
-    closes: "12:00am,12:00am,12:00am,12:00am,12:00am,12:00am,12:00am",
+    closes: "midnight,midnight,midnight,midnight,midnight,midnight,midnight",
     "": ""
   },
   {

@@ -93,6 +93,7 @@ function initMap() {
   map.setOptions({ minZoom: 15 });
   maploaded(map);
   affixToTop(map);
+  genmapControls();
 }
 function genmapControls() {
   app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
