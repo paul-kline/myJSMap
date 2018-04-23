@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #map {
+            height: 40vh;
+            width: 100%;
+        }
+    </style>
+    <link rel="stylesheet" href="./css.css">
+
+    <title>KU Dining</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="grid">
+            <div class="map" id="map"></div>
+            <div class="info">
+                <div class="grid2">
+                    <template v-for="place in places" class="info-place">
+                        <div class="title-group">
+                            <div class="name">{{ place[cc.name] }}</div>
+                            <div class="building" v-if="place.Building">{{place[cc.bldg]}}</div>
+                        </div>
+                        <div class="flex-item hours">
+                            <div>Hours:</div>
+                            <div>{{place.hours1}}</div>
+                            <div>{{place.hours2}}</div>
+                            <div>{{place.hours3}}</div>
+                        </div>
+                        <div class="flex-item phone">
+                            {{place[cc.phone]}}
+                        </div>
+
+                        <div class="divider"></div>
+
+                    </template>
+                </div>
+            </div>
+
+        </div>
+        {{ message }}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="./myjs.js"></script>
+    <script type="text/javascript" src="./fooddata.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap">
+    </script>
+
+
+</body>
+
+</html>
