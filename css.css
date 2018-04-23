@@ -53,7 +53,7 @@
 
 .grid {
   display: grid;
-  grid-template-rows: 40vh 45vh;
+  grid-template-rows: 40vh 48vh;
   grid-gap: 10px;
 }
 .info {
