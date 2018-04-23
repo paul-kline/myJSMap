@@ -24,12 +24,14 @@
                             <div class="name" v-on:click="onTouched(place)">{{ place[cc.name] }}</div>
                             <div class="building" v-if="place.Building">{{place[cc.bldg]}}</div>
                         </div>
-                        <div class="flex-item hours">
+                        <div v-if="place.isOpen">OPEN</div>
+                        <div v-else>CLOSED</div>
+                        <!-- <div class="flex-item hours">
                             <div>Hours:</div>
                             <div>{{place.hours1}}</div>
                             <div>{{place.hours2}}</div>
                             <div>{{place.hours3}}</div>
-                        </div>
+                        </div> -->
                         <div class="flex-item phone">
                             {{place[cc.phone]}}
                         </div>

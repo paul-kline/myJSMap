@@ -173,6 +173,14 @@ function scrollToTop() {
   document.getElementsByClassName("info")[0].scrollTo(0, 0);
 }
 function buildPopup(obj) {
+  let hours = "";
+  let f = x => (x ? `<li>${x}</li>` : "");
+
+  hours += f(obj.hours1);
+  hours += f(obj.hours2);
+  hours += f(obj.hours3);
+  hours += f(obj.hours4);
+
   return `
    <div id="content">
      <div id="siteNotice"></div>
@@ -180,9 +188,7 @@ function buildPopup(obj) {
       <div id="bodyContent">
         <strong>Hours</strong>
         <ul>
-          <li>${obj.hours1} </li>
-          <li>${obj.hours2} </li>
-          <li>${obj.hours3} </li>
+          ${hours}
         </ul>
 
     
