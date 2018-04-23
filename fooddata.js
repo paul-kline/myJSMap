@@ -26,6 +26,7 @@ let fooddata = [
     lng: -95.2585763,
     opens: "11:00am,7:00am,7:00am,7:00am,7:00am,7:00am,11:00am",
     closes: "7:30pm,7:30pm,7:30pm,7:30pm,7:30pm,7:30pm,7:30pm",
+    menu: "",
     "": ""
   },
   {
@@ -47,6 +48,7 @@ let fooddata = [
     lng: -95.2528466,
     opens: "11:00am,7:00am,7:00am,7:00am,7:00am,7:00am,11:00am",
     closes: "7:00pm,7:00pm,7:00pm,7:00pm,7:00pm,7:00pm,7:00pm",
+    menu: "",
     "": ""
   },
   {
@@ -68,6 +70,7 @@ let fooddata = [
     lng: -95.2417962,
     opens: "11:00am,7:00am,7:00am,7:00am,7:00am,7:00am,11:00am",
     closes: "2:30pm,7:30pm,7:30pm,7:30pm,7:30pm,2:30pm,2:30pm",
+    menu: "",
     "": ""
   },
   {
@@ -89,6 +92,8 @@ let fooddata = [
     lng: -95.2588591,
     opens: "7:30pm,5:00pm,5:00pm,5:00pm,5:00pm,5:00pm,7:30pm",
     closes: "midnight, midnight,midnight,midnight,midnight,midnight,midnight",
+    menu:
+      "http://issuu.com/kumemorialunion/docs/studio_-_menu_boards_fa16?e=26059554/38391583",
     "": ""
   },
   {
@@ -110,6 +115,7 @@ let fooddata = [
     lng: -95.2520387,
     opens: "10:00am,11:00am,11:00am,11:00am,11:00am,11:00am,10:00am",
     closes: "11:00pm,11:00pm,11:00pm,11:00pm,11:00pm,11:00pm,11:00pm",
+    menu: "",
     "": ""
   },
   {
@@ -131,6 +137,7 @@ let fooddata = [
     lng: -95.2434651,
     opens: "CLOSED,8:00am,8:00am,8:00am,8:00am,8:00am,CLOSED",
     closes: "CLOSED,4:00pm,4:00pm,4:00pm,4:00pm,4:00pm,CLOSED",
+    menu: "",
     "": ""
   },
   {
@@ -152,6 +159,7 @@ let fooddata = [
     lng: -95.2477536,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,4:00pm,4:00pm,4:00pm,4:00pm,4:00pm,CLOSED",
+    menu: "",
     "": ""
   },
   {
@@ -173,6 +181,7 @@ let fooddata = [
     lng: -95.251263,
     opens: "CLOSED,7:00am,7:00am,7:00am,7:00am,7:00am,CLOSED",
     closes: "CLOSED,3:00pm,3:00pm,3:00pm,3:00pm,3:00pm,CLOSED",
+    menu: "",
     "": ""
   },
   {
@@ -194,6 +203,8 @@ let fooddata = [
     lng: -95.263848,
     opens: "CLOSED,11:00am,11:00am,11:00am,11:00am,11:00am,CLOSED",
     closes: "CLOSED,2:00pm,2:00pm,2:00pm,2:00pm,2:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_freshfusion_menu_boards_fa17?e=26059554/52397010",
     "": ""
   },
   {
@@ -215,6 +226,8 @@ let fooddata = [
     lng: -95.25937239999999,
     opens: "9:00am,7:00am,7:00am,7:00am,7:00am,7:00am,9:00am",
     closes: "midnight,midnight,midnight,midnight,midnight,midnight,midnight",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci",
     "": ""
   },
   {
@@ -236,6 +249,8 @@ let fooddata = [
     lng: -95.2434651,
     opens: "CLOSED,11:00am,11:00am,11:00am,11:00am,11:00am,CLOSED",
     closes: "CLOSED,2:00pm,2:00pm,2:00pm,2:00pm,2:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/impromptu_web_menu_sp16?e=26059554/38226212",
     "": ""
   },
   {
@@ -257,6 +272,8 @@ let fooddata = [
     lng: -95.2540253,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,8:00pm,8:00pm,8:00pm,8:00pm,2:30pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci",
     "": ""
   },
   {
@@ -278,6 +295,8 @@ let fooddata = [
     lng: -95.2505894,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,4:30pm,4:30pm,4:30pm,4:30pm,2:30pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu",
     "": ""
   },
   {
@@ -299,6 +318,8 @@ let fooddata = [
     lng: -95.2476138,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,2:30pm,2:30pm,2:30pm,2:30pm,2:30pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu",
     "": ""
   },
   {
@@ -320,6 +341,8 @@ let fooddata = [
     lng: -95.24484,
     opens: "CLOSED,8:00am,8:00am,8:00am,8:00am,8:00am,CLOSED",
     closes: "CLOSED,4:00pm,4:00pm,4:00pm,4:00pm,2:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu",
     "": ""
   },
   {
@@ -341,6 +364,8 @@ let fooddata = [
     lng: -95.2496611,
     opens: "CLOSED,7:00am,7:00am,7:00am,7:00am,7:00am,CLOSED",
     closes: "CLOSED,11:00pm,11:00pm,11:00pm,11:00pm,2:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci",
     "": ""
   },
   {
@@ -362,6 +387,8 @@ let fooddata = [
     lng: -95.2434651,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,9:00am",
     closes: "CLOSED,7:00pm,7:00pm,7:00pm,7:00pm,6:00pm,3:00pm",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788",
     "": ""
   },
   {
@@ -383,6 +410,8 @@ let fooddata = [
     lng: -95.251263,
     opens: "CLOSED,7:00am,7:00am,7:00am,7:00am,7:00am,10:00am",
     closes: "CLOSED,6:00pm,6:00pm,6:00pm,6:00pm,5:00pm,3:00pm",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788",
     "": ""
   },
   {
@@ -404,6 +433,8 @@ let fooddata = [
     lng: -95.2477536,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,4:00pm, 4:00pm,4:00pm,4:00pm,4:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788",
     "": ""
   },
   {
@@ -425,6 +456,8 @@ let fooddata = [
     lng: -95.263848,
     opens: "CLOSED,8:00am,8:00am,8:00am,8:00am,8:00am,CLOSED",
     closes: "CLOSED,2:00PM,2:00pm,2:00pm,2:00pm,2:00pm,CLOSED",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788",
     "": ""
   },
   {
@@ -446,6 +479,7 @@ let fooddata = [
     lng: -95.2511239,
     opens: "CLOSED,7:30am,7:30am,7:30am,7:30am,7:30am,CLOSED",
     closes: "CLOSED,4:30pm,4:30pm,4:30pm,4:30pm,2:30pm,CLOSED",
+    menu: "",
     "": ""
   }
 ];

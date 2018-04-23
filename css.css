@@ -61,7 +61,7 @@
 }
 .grid2 {
   display: grid;
-  grid-template-columns: repeat(4, auto);
+  grid-template-columns: repeat(5, auto);
   grid-auto-rows: auto;
 }
 .title-group:nth-of-type(1) {

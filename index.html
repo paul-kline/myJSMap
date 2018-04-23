@@ -35,6 +35,8 @@
                         <div class="flex-item phone">
                             {{place[cc.phone]}}
                         </div>
+                        <a v-if="place.menu" v-bind:href="place.menu" target="_blank">Published Menu</a>
+                        <div v-else>no menu</div>
                         <div class="dist" v-if="place.distance != undefined">
                             Dist: {{place.distance}}
                         </div>
@@ -55,7 +57,8 @@
                 Filters:
                 <br>
                 <div>
-                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterOpen(this.checked)">Open Now
+                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterOpen(this.checked)">
+                    <label for="chkbox-open-now">Open Now</label>
                 </div>
 
             </div>
