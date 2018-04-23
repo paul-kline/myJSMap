@@ -18,11 +18,8 @@
         <div class="grid">
             <div class="map" id="map"></div>
             <div class="info">
-                <div v-if="userLocation" class="dist-sort">
-                    <button v-on:click="sortByDist()">Sort By Dist</button>
-                </div>
                 <div class="grid2">
-                    <template v-for="place in places" class="info-place">
+                    <template v-for="place in places" v-if="place.display">
                         <div class="title-group">
                             <div class="name" v-on:click="onTouched(place)">{{ place[cc.name] }}</div>
                             <div class="building" v-if="place.Building">{{place[cc.bldg]}}</div>
@@ -48,6 +45,20 @@
 
         </div>
         {{ message }}
+        <div id="mapcontrols">
+            <div v-if="userLocation">
+                <button v-on:click="sortByDist()">Sort By Distance</button>
+            </div>
+            <div class="filters">
+                Filters:
+                <br>
+                <div>
+                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterOpen(this.checked)">Open Now
+                </div>
+
+            </div>
+
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="./myjs.js"></script>

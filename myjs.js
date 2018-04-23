@@ -9,7 +9,79 @@ var app = new Vue({
     bounds: null //cant yet.
   }
 });
+function calcIsOpens(date = new Date(), places = app.places) {
+  let todayIndex = date.getDay();
+  //TODO: check if special hours apply to date.
+  console.log("in clacisopens", places);
+  console.log("instance ", places instanceof Array);
+  places.forEach(place => {
+    console.log("in each place");
+    let openarr = place.opens.split(",");
+    let closearr = place.closes.split(",");
+    let openstr = openarr[todayIndex];
+    let closestr = closearr[todayIndex];
+    if (
+      openstr.toLowerCase() == "closed" ||
+      closestr.toLowerCase() == "closed"
+    ) {
+      place.isOpen = false;
+    } else {
+      [oh, om] = tohrmin(openstr);
+      [ch, cm] = tohrmin(closestr);
+      let o = oh * 60 + om;
+      let c = ch * 60 + cm;
+      let dh = date.getHours();
+      let dm = date.getMinutes();
+      let d = dh * 60 + dm;
+      console.log(place, oh, om, ch, cm, dh, dm);
+      place.isOpen = d >= o && d < c;
+    }
+  });
+}
+function filterOpen(onlyOpen) {
+  console.log("only open:", onlyOpen);
+  app.places.forEach(e => {
+    if (onlyOpen) {
+      e.display = e.display && e.isOpen;
+    } else {
+      e.display = true;
+    }
+    if (e.display) {
+      if (!e.marker.map) {
+        e.marker.setMap(app.map);
+      }
+    } else {
+      //don't show it!
+      if (e.marker.map) {
+        e.marker.setMap(null);
+      }
+    }
+  });
+}
+function tohrmin(str) {
+  str = str.toLowerCase();
+  if (str == "midnight") {
+    return [24, 0];
+  }
+  let res = [0, 0];
+  if (str.includes("d")) {
+    //indicator that this is the next day.
+    //add 24 hours then!
+    res[0] += 24;
+    str = str.replace("d", "");
+  }
+  if (str.includes("pm")) {
+    str = str.replace("pm", "");
+    res[0] += 12;
+  } else {
+    str = str.replace("am", "");
+  }
+  [h, m] = str.split(":").map(x => parseInt(x.trim(), 10));
+  res[0] += h;
+  res[1] += m;
 
+  return res;
+}
 function initMap() {
   var uluru = { lat: -25.363, lng: 131.044 };
   var map = new google.maps.Map(document.getElementById("map"), {
@@ -22,7 +94,11 @@ function initMap() {
   maploaded(map);
   affixToTop(map);
 }
-
+function genmapControls() {
+  app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
+    document.getElementById("mapcontrols")
+  );
+}
 function affixToTop(map) {
   let el = document.getElementById("map");
   el.style.position = "fixed";
@@ -31,10 +107,12 @@ function affixToTop(map) {
   console.log("all set", el);
 }
 function maploaded(map) {
+  fooddata.forEach(e => (e.display = true));
   console.log("map loaded!");
   app.bounds = new google.maps.LatLngBounds();
   app.map = map;
   loadIntoMap(map, fooddata);
+  calcIsOpens();
   //must be after map populated.
   //   initializeAccordions();
   locateUser(map);
