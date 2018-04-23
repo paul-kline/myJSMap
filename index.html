@@ -4,8 +4,8 @@
 <head>
     <style>
         #map {
-            height: 40vh;
-            width: 100%;
+            height: 47vh;
+            width: 50vw;
         }
     </style>
     <link rel="stylesheet" href="./css.css">
@@ -16,7 +16,30 @@
 <body>
     <div id="app">
         <div class="grid">
-            <div class="map" id="map"></div>
+            <div class="griptop">
+                <div class="flex-row">
+                    <div class="map" id="map"></div>
+                    <div class="current" v-if="currentSelection">
+                        <h2>{{currentSelection[cc.name]}}</h2>
+                        <div v-if="currentSelection.isOpen">Open Now</div>
+                        <div v-else>Currently Closed</div>
+                        <div>Hours:</div>
+                        <ul>
+                            <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
+                            <li v-if="currentSelection.hours2">{{currentSelection.hours2}}</li>
+                            <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
+                            <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
+                        </ul>
+                        <a v-bind:href="currentSelection.directionsUrl">Directions</a>
+
+
+                    </div>
+                </div>
+                <div v-if="userLocation">
+                    <button v-on:click="sortByDist()">Sort By Distance</button>
+                </div>
+            </div>
+
             <div class="info">
                 <div class="grid2">
                     <template v-for="place in places" v-if="place.display">
@@ -50,8 +73,9 @@
         </div>
         {{ message }}
         <div class="mapcontrols" id="mapcontrols">
-            <div v-if="userLocation">
-                <button v-on:click="sortByDist()">Sort By Distance</button>
+
+            <div>
+                <button onclick="recenter()">ReCenter Map</button>
             </div>
             <div class="filters">
                 Filters:

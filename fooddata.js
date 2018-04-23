@@ -2,7 +2,9 @@
 let cc = {
   phone: "Phone",
   bldg: "Building",
-  name: "Name"
+  name: "Name",
+  city: "City",
+  street: "Street"
 };
 
 let center = { center: { lat: 38.9559656238095, lng: -95.2513079666667 } };

@@ -12,10 +12,10 @@ var app = new Vue({
 function calcIsOpens(date = new Date(), places = app.places) {
   let todayIndex = date.getDay();
   //TODO: check if special hours apply to date.
-  console.log("in clacisopens", places);
-  console.log("instance ", places instanceof Array);
+  // console.log("in clacisopens", places);
+  // console.log("instance ", places instanceof Array);
   places.forEach(place => {
-    console.log("in each place");
+    // console.log("in each place");
     let openarr = place.opens.split(",");
     let closearr = place.closes.split(",");
     let openstr = openarr[todayIndex];
@@ -33,7 +33,7 @@ function calcIsOpens(date = new Date(), places = app.places) {
       let dh = date.getHours();
       let dm = date.getMinutes();
       let d = dh * 60 + dm;
-      console.log(place, oh, om, ch, cm, dh, dm);
+      // console.log(place, oh, om, ch, cm, dh, dm);
       place.isOpen = d >= o && d < c;
     }
   });
@@ -62,15 +62,21 @@ function tohrmin(str) {
 
   return res;
 }
+function recenter(map = app.map) {
+  map.setCenter(center.center);
+  map.setZoom(15);
+}
 function initMap() {
   var uluru = { lat: -25.363, lng: 131.044 };
   var map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 15,
-    center: center.center
+    // zoom: 15,
+    // center: center.center,
+    mapTypeControl: false
     // ,
     // gestureHandling: "greedy"
   });
-  map.setOptions({ minZoom: 15 });
+  // map.setOptions({ minZoom: 15 });
+  recenter(map);
   maploaded(map);
   affixToTop(map);
   genmapControls();
@@ -88,7 +94,10 @@ function affixToTop(map) {
   console.log("all set", el);
 }
 function maploaded(map) {
-  fooddata.forEach(e => (e.display = true));
+  fooddata.forEach(e => {
+    e.directionsUrl = buildDirectionsLink(e);
+    e.display = true;
+  });
   console.log("map loaded!");
   app.bounds = new google.maps.LatLngBounds();
   app.map = map;
@@ -107,7 +116,7 @@ function loadIntoMap(map, results) {
     let cur = results[i];
     let latLng = new google.maps.LatLng(cur.lat, cur.lng);
     app.bounds.extend(latLng);
-    map.fitBounds(app.bounds);
+    // map.fitBounds(app.bounds);
     let marker = new google.maps.Marker({
       position: latLng,
       map: map,
@@ -187,7 +196,7 @@ function onTouched(place, fromMap = false) {
 function scrollToTop() {
   document.getElementsByClassName("info")[0].scrollTo(0, 0);
 }
-function buildPopup(obj) {
+function buildHoursList(obj) {
   let hours = "";
   let f = x => (x ? `<li>${x}</li>` : "");
 
@@ -195,18 +204,33 @@ function buildPopup(obj) {
   hours += f(obj.hours2);
   hours += f(obj.hours3);
   hours += f(obj.hours4);
+  if (hours) {
+    return `<ul>${hours}</ul>`;
+  } else {
+    return "";
+  }
+}
+function buildDirectionsLink(obj) {
+  let lnk = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    obj[cc.name] +
+      " " +
+      (obj[cc.bldg] ? obj[cc.bldg] + " " : "") +
+      obj[cc.street] +
+      " " +
+      obj[cc.city]
+  )}`;
+  return lnk;
+}
+function buildPopup(obj) {
+  let hours = ""; //buildHoursList(obj);
 
   return `
    <div id="content">
      <div id="siteNotice"></div>
      <h2 id="firstHeading" class="firstHeading">${obj.Name}</h2>
       <div id="bodyContent">
-        <strong>Hours</strong>
-        <ul>
-          ${hours}
-        </ul>
-
-    
+        <!-- <strong>Hours</strong> -->
+          ${hours}      
       </div>
     </div>
     `;
