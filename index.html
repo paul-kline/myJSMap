@@ -18,10 +18,13 @@
         <div class="grid">
             <div class="map" id="map"></div>
             <div class="info">
+                <div v-if="userLocation" class="dist-sort">
+                    <button v-on:click="sortByDist()">Sort By Dist</button>
+                </div>
                 <div class="grid2">
                     <template v-for="place in places" class="info-place">
                         <div class="title-group">
-                            <div class="name">{{ place[cc.name] }}</div>
+                            <div class="name" v-on:click="onTouched(place)">{{ place[cc.name] }}</div>
                             <div class="building" v-if="place.Building">{{place[cc.bldg]}}</div>
                         </div>
                         <div class="flex-item hours">
@@ -32,6 +35,9 @@
                         </div>
                         <div class="flex-item phone">
                             {{place[cc.phone]}}
+                        </div>
+                        <div class="dist" v-if="place.distance != undefined">
+                            Dist: {{place.distance}}
                         </div>
 
                         <div class="divider"></div>

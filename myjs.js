@@ -39,7 +39,10 @@ function maploaded(map) {
   //   initializeAccordions();
   locateUser(map);
 }
-
+function computeAllLocationsTo(latlng) {
+  let lat = latlng.lat;
+  let lng = latlng.lng;
+}
 function loadIntoMap(map, results) {
   for (let i = 0; i < results.length; i++) {
     let cur = results[i];
@@ -72,13 +75,23 @@ function onTouched(place, fromMap = false) {
   if (app.currentSelection) {
     app.currentSelection.infowindow.close();
   }
-  //order to front of list!
-  [e] = app.places.splice(app.places.indexOf(place), 1);
-  app.places.unshift(e);
-  console.log(e);
-  app.currentSelection = e;
+  //order to front of list if from map.
+  if (fromMap) {
+    [e] = app.places.splice(app.places.indexOf(place), 1);
+    app.places.unshift(e);
+    console.log(e);
+    app.currentSelection = e;
+    //scroll to top:
+    scrollToTop();
+  } else {
+    app.currentSelection = place;
+  }
+
   let marker = app.currentSelection.marker;
   app.currentSelection.infowindow.open(map, marker);
+}
+function scrollToTop() {
+  document.getElementsByClassName("info")[0].scrollTo(0, 0);
 }
 function buildPopup(obj) {
   return `
@@ -107,6 +120,16 @@ function iconisize(addr) {
     new google.maps.Size(20, 20)
   );
 }
+function setDistancesFrom(latlng) {
+  app.places.forEach(el => {
+    el.distance =
+      calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371; //to miles.
+  });
+}
+
+function sortByDist() {
+  app.places.sort((x, y) => x.distance - y.distance);
+}
 
 function locateUser(map) {
   infoWindow = new google.maps.InfoWindow();
@@ -125,6 +148,7 @@ function locateUser(map) {
           title: "Your location",
           icon: "./images/curloc.svg" //iconisize(icons.dd)
         });
+        setDistancesFrom(pos);
       },
       function() {
         handleLocationError(true, infoWindow, map.getCenter());
@@ -176,3 +200,22 @@ let icons = {
   bb:
     "https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg"
 };
+
+function calcCrowDistKM(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2 - lat1); // deg2rad below
+  var dLon = deg2rad(lon2 - lon1);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI / 180);
+}
