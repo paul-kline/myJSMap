@@ -149,7 +149,42 @@ function loadIntoMap(map, results) {
     app.places.push(cur);
   }
 }
+function getCheckBox(str) {
+  let r = "";
+  if (str == "open") r = "chkbox-open-now";
+  if (str == "bb") r = "chkbox-bb";
+  if (str == "cash") r = "chkbox-cash";
+  if (str == "ms") r = "chkbox-ms";
+  if (str == "dd") r = "chkbox-dd";
+  return document.getElementById(r);
+}
+function filterStateChange(places = app.places) {
+  let isOpenOnly = getCheckBox("open").checked;
+  let mustbb = getCheckBox("bb").checked;
+  let mustCash = getCheckBox("cash").checked;
+  let mustms = getCheckBox("ms").checked;
+  let mustdd = getCheckBox("dd").checked;
+  places.forEach(e => {
+    let openReq = isOpenOnly ? e.isOpen : true;
+    let mustbbReq = mustbb ? e.bb : true;
+    let mustCashReq = mustCash ? e.cash : true;
+    let mustmsReq = mustms ? e.ms : true;
+    let mustddReq = mustdd ? e.dd : true;
 
+    e.display = openReq && mustbbReq && mustCashReq && mustmsReq && mustddReq;
+
+    if (e.display) {
+      if (!e.marker.map) {
+        e.marker.setMap(app.map);
+      }
+    } else {
+      //don't show it!
+      if (e.marker.map) {
+        e.marker.setMap(null);
+      }
+    }
+  });
+}
 function onTouched(place, fromMap = false) {
   if (app.currentSelection) {
     app.currentSelection.infowindow.close();

@@ -57,8 +57,27 @@
                 Filters:
                 <br>
                 <div>
-                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterOpen(this.checked)">
-                    <label for="chkbox-open-now">Open Now</label>
+                    <div>
+                        <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
+                        <label for="chkbox-open-now">Must be open Now</label>
+
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
+                        <label for="chkbox-bb">Must accept Beak 'em Bucks</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
+                        <label for="chkbox-dd">Must accept Dining Dollars</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
+                        <label for="chkbox-ms">Must accept Meal Plan Swipe</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
+                        <label for="chkbox-cash">Must accept cash</label>
+                    </div>
                 </div>
 
             </div>
