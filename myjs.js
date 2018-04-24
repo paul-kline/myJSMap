@@ -373,10 +373,3 @@ function round(number, precision) {
   };
   return shift(Math.round(shift(number, precision, false)), precision, true);
 }
-
-jQuery(function() {
-  jQuery("#menu-date").datepicker({
-    dateFormat: "m/d/yy",
-    defaultDate: 0
-  });
-});
