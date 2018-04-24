@@ -124,7 +124,8 @@ function loadIntoMap(map, results) {
       position: latLng,
       map: map,
       title:
-        cur.Name + (cur.Building.length > 0 ? " (" + cur.Building + ")" : "")
+        cur.Name + (cur.Building.length > 0 ? " (" + cur.Building + ")" : ""),
+      zIndex: 1
       //   ,
       //   icon: iconisize(icons.dd)
     });
@@ -281,8 +282,11 @@ function locateUser(map) {
           position: pos,
           map: map,
           title: "Your location",
-          icon: "./images/curloc.svg" //iconisize(icons.dd)
+          icon: "./images/curloc.svg", //iconisize(icons.dd)
+          zIndex: 0
         });
+
+        // userLoc = marker;
         setDistancesFrom(pos);
       },
       function() {
