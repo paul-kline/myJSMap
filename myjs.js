@@ -85,6 +85,9 @@ function genmapControls() {
   app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
     document.getElementById("mapcontrols")
   );
+  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
+    document.getElementById("recenter")
+  );
 }
 function affixToTop(map) {
   let el = document.getElementById("map");
@@ -222,14 +225,22 @@ function buildDirectionsLink(obj) {
   return lnk;
 }
 function buildPopup(obj) {
-  let hours = ""; //buildHoursList(obj);
-
+  let hours = buildHoursList(obj);
+  let phone = "";
+  if (obj[cc.phone]) {
+    phone = `<div><a href="tel:${obj[cc.phone]}">${obj[cc.phone]}</a></div>`;
+  }
   return `
-   <div id="content">
+   <div id="content" style="z-index:5">
      <div id="siteNotice"></div>
-     <h2 id="firstHeading" class="firstHeading">${obj.Name}</h2>
+     <div id="firstHeading" class="popup-title">${obj.Name}</div>
+     <div class="popup-bldg">${obj[cc.bldg]}</div>
+    <div class="popup-street">${obj[cc.street]}</div>
+    <div class="popup-city">${obj[cc.city]}</div>
       <div id="bodyContent">
-        <!-- <strong>Hours</strong> -->
+      <div><a href="${obj.directionsUrl}" target="_blank">Directions</a></div>
+      ${phone}
+         <strong>Hours</strong>
           ${hours}      
       </div>
     </div>
@@ -343,3 +354,29 @@ function calcCrowDistKM(lat1, lon1, lat2, lon2) {
 function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
+
+// $(document).ready(function() {
+//   $("#myTable").DataTable();
+// });
+
+function round(number, precision) {
+  var shift = function(number, precision, reverseShift) {
+    if (reverseShift) {
+      precision = -precision;
+    }
+    var numArray = ("" + number).split("e");
+    return +(
+      numArray[0] +
+      "e" +
+      (numArray[1] ? +numArray[1] + precision : precision)
+    );
+  };
+  return shift(Math.round(shift(number, precision, false)), precision, true);
+}
+
+jQuery(function() {
+  jQuery("#menu-date").datepicker({
+    dateFormat: "m/d/yy",
+    defaultDate: 0
+  });
+});

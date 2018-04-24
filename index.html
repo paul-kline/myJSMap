@@ -9,8 +9,12 @@
         }
     </style>
     <link rel="stylesheet" href="./css.css">
+    <!-- <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
     <title>KU Dining</title>
+    <link href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -19,50 +23,148 @@
             <div class="griptop">
                 <div class="flex-row">
                     <div class="map" id="map"></div>
-                    <div class="current" v-if="currentSelection">
-                        <h2>{{currentSelection[cc.name]}}</h2>
-                        <div v-if="currentSelection.isOpen">Open Now</div>
-                        <div v-else>Currently Closed</div>
-                        <div>Hours:</div>
+                    <div class="current w3-card-4 w3-margin" v-if="currentSelection">
+                        <div class="w3-xlarge">{{currentSelection[cc.name]}}</div>
+
+                        <div v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</div>
+                        <!-- <div>Hours:</div>
                         <ul>
                             <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
                             <li v-if="currentSelection.hours2">{{currentSelection.hours2}}</li>
                             <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
                             <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
-                        </ul>
-                        <a v-bind:href="currentSelection.directionsUrl">Directions</a>
+                        </ul> -->
+                        <div class="">
+                            <div>Published Menus:</div>
+                            <div class="w3-leftbar w3-margin">
+                                <template class="menu" v-for="item in cc.menus">
+                                    <div class=" w3-margin" v-if="currentSelection[item]">
+                                        <a v-bind:href="currentSelection[item]" target="_blank">{{item}}</a>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div v-if="currentSelection.searchable">
+                            <div class="w3-large">Search Menu</div>
+                            <div class="form-group">
+                                <h4 style="margin-bottom: 0;">
+                                    <label for="date">Date:</label>
+                                </h4>
+                                <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
+                                <small class="form-text text-muted">m/d/yyyy</small>
+                            </div>
+                            &nbsp;
 
+                            <h4 style="margin-bottom: 0;">
+                                <label>Meal:</label>
+                            </h4>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
+                            </div>
+                            <br />
+                            <button class="btn btn-primary" type="submit">Search</button>
+
+                            <hr />
+                            </form>
+
+                        </div>
 
                     </div>
                 </div>
-                <div v-if="userLocation">
-                    <button v-on:click="sortByDist()">Sort By Distance</button>
-                </div>
+
             </div>
 
             <div class="info">
+
+                <!-- <div class="dataTable">
+                    <table id="myTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Distance (mi)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="place in places" v-on:click="onTouched(place)">
+                                <td>{{place[cc.name]}}</td>
+                                <td v-if="place.isOpen">open</td>
+                                <td v-else>closed</td>
+                                <td v-if="place.distance">{{round(place.distance,2)}}</td>
+                                <td v-else>--</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div> -->
+
+
                 <div class="grid2">
-                    <template v-for="place in places" v-if="place.display">
-                        <div class="title-group">
-                            <div class="name" v-on:click="onTouched(place)">{{ place[cc.name] }}</div>
-                            <div class="building" v-if="place.Building">{{place[cc.bldg]}}</div>
+                    <div class="column-header">Name</div>
+                    <div class="column-header">Status</div>
+                    <div class="column-header">
+                        <div v-if="userLocation">
+                            <span class="w3-button" v-on:click="sortByDist()">Distance (mi)</span>
                         </div>
-                        <div v-if="place.isOpen">OPEN</div>
-                        <div v-else>CLOSED</div>
+                        <div v-else> Distance (NA)</div>
+                    </div>
+                    <div class="divider"></div>
+                    <template v-for="place in places" v-if="place.display">
+                        <div v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
+                            <div class="name">{{ place[cc.name] }}</div>
+                            <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+                            <span v-if="place.dd" class="tooltip">
+                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                <span class="tooltiptext">Dining Dollars</span>
+                            </span>
+                            <span v-if="place.ms" class="tooltip">
+                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                <span class="tooltiptext">Meal Swipe</span>
+                            </span>
+                            <span v-if="place.cash" class="tooltip">
+                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                <span class="tooltiptext">Cash</span>
+                            </span>
+                            <span v-if="place.bb" class="tooltip">
+                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                <span class="tooltiptext">Beak 'em Bucks</span>
+                            </span>
+
+                        </div>
+                        <div v-if="place.isOpen">open</div>
+                        <div v-else class="w3-text-red">closed</div>
                         <!-- <div class="flex-item hours">
                             <div>Hours:</div>
                             <div>{{place.hours1}}</div>
                             <div>{{place.hours2}}</div>
                             <div>{{place.hours3}}</div>
                         </div> -->
-                        <div class="flex-item phone">
+                        <!-- <div class="flex-item phone">
                             {{place[cc.phone]}}
+                        </div> -->
+                        <!-- <a v-if="place.menu" v-bind:href="place.menu" target="_blank">Published Menu</a> -->
+                        <!-- <div v-else>no menu</div> -->
+                        <div class="dist w3-center" v-if="place.distance != undefined">
+                            {{round(place.distance,2)}}
                         </div>
-                        <a v-if="place.menu" v-bind:href="place.menu" target="_blank">Published Menu</a>
-                        <div v-else>no menu</div>
-                        <div class="dist" v-if="place.distance != undefined">
-                            Dist: {{place.distance}}
-                        </div>
+                        <div v-else>--</div>
 
                         <div class="divider"></div>
 
@@ -72,46 +174,214 @@
 
         </div>
         {{ message }}
-        <div class="mapcontrols" id="mapcontrols">
-
-            <div>
-                <button onclick="recenter()">ReCenter Map</button>
-            </div>
+        <div class="mapcontrols w3-round" id="mapcontrols">
             <div class="filters">
-                Filters:
+                <strong>Filters:</strong>
                 <br>
                 <div>
                     <div>
                         <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
-                        <label for="chkbox-open-now">Must be open Now</label>
+                        <label for="chkbox-open-now">must be open now</label>
 
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
-                        <label for="chkbox-bb">Must accept Beak 'em Bucks</label>
+                        <label for="chkbox-bb">must accept Beak 'em Bucks</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
-                        <label for="chkbox-dd">Must accept Dining Dollars</label>
+                        <label for="chkbox-dd">must accept Dining Dollars</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
-                        <label for="chkbox-ms">Must accept Meal Plan Swipe</label>
+                        <label for="chkbox-ms">must accept Meal Plan Swipe</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
-                        <label for="chkbox-cash">Must accept cash</label>
+                        <label for="chkbox-cash">must accept cash</label>
                     </div>
                 </div>
 
             </div>
 
         </div>
+        <div class="w3-margin">
+            <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
+        </div>
     </div>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="./myjs.js"></script>
     <script type="text/javascript" src="./fooddata.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap"></script>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script>
+        jQuery(function () {
+            jQuery('#menu-date').datepicker({
+                dateFormat: 'm/d/yy',
+                defaultDate: 0
+            });
+        });
+
+        /**
+         * Loads external page data for the given url.
+         * If the url is invalid, then does nothing.
+         * @pre the url is valid, accessed through http: or https:, and has CORS settings permissible for use by XMLHttpRequest
+         * @param {string} url the url of the page to be loaded
+         */
+        function loadExternalPageData(url) {
+            var xmlhttp;
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+            //TODO: add handling for an error status
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    console.log('Request successful');
+                    processPageData(xmlhttp.responseText);
+                } else if (xmlhttp.readyState == 4 && xmlhttp.status != 200) {
+                    console.error(xmlhttp.status);
+                }
+            };
+            xmlhttp.open('GET', correctProtocol(url), true);
+            console.log('Sending request');
+            xmlhttp.send();
+        }
+
+        /**
+         * Checks the protocol of the current page and sets the input url to the correct protocol
+         * @param {string} url the input url, beginning with either http: or https:
+         */
+        function correctProtocol(url) {
+            if (location.protocol === 'https:' && url.substring(0, 5) === 'http:') {
+                return 'https:' + url.substring(5);
+            } else if (location.protocol === 'http:' && url.substring(0, 6) === 'https:') {
+                return 'http:' + url.substring(6);
+            }
+            return url;
+        }
+
+        /**
+         * Processes external page data, formats it as a table, and puts the table in the menu-results div
+         * @param {string} the responseText (HTML) from the external page that was loaded
+         */
+        function processPageData(data) {
+            data = JSON.parse(data);
+            data.map(function (val, index) {
+                val.push(index); //add original order information to make sort results stable
+            });
+            console.log(data);
+            data.sort(menuCompare);
+            jQuery('#menu-results').html(renderMenuView(data));
+        }
+
+        /**
+         * Formats relevant row data in a table row (indexes 0, 2, 3, 5, 7)
+         * @param {array} rowData The data for a row of menus
+         * @return {string} A string of the relevant data formatted as an html table row
+         */
+        function formatRowData(rowData) {
+            return '<tr><td>' + rowData[2] + '</td><td>' + rowData[0] + '</td><td>' + rowData[3] + '</td><td>' + rowData[5] + '</td><td>' + rowData[7] + '</td></tr>';
+        }
+
+        /**
+         * Gets the form input for menu item filters and returns it as an object
+         * Multiple checkbox selections will be stored as a string with different values separated by the | (pipe) character
+         * @return {object} An object with any defined filters and their values
+         */
+        function getFilters() {
+            var filters = {};
+            var locations = getCheckboxValues('location');
+            if (locations.length) {
+                filters.service_unit = locations.join('|');
+            }
+            if (jQuery('#menu-date').val()) {
+                filters.eventdate = jQuery('#menu-date').val();
+            }
+            var meals = getCheckboxValues('meal');
+            if (meals.length) {
+                meals.push('DAILY');
+                filters.meal = meals.join('|');
+            }
+            return filters;
+        }
+
+        /**
+         * Handles submission of the menu query, collecting filters and submitting the ajax request
+         * @return {boolean} always false to stop the form from submitting and the page from refreshing
+         */
+        function submitQuery() {
+            var filters = getFilters();
+            var url = 'https://dept.ku.edu/~union/cgi-bin/wordpress/dining-menus/ku-dining-menus.php?' + jQuery.param(filters);
+            console.log('Submitting request to uri: ' + url);
+            loadExternalPageData(url);
+            return false; //stop the form from submitting
+        }
+
+        /**
+         * A comparison function to be used in a sort of the menu results array
+         * Sorts primarily by date, then location, then meal, then station (ascending chronologically/alphabetically)
+         * @param a {array} The first menu row to compare
+         * @param b {array} The second menu row to compare
+         * @return {number} Number indicating the result of the comparison (positive if a > b, negative if b > a, 0 if a == b)
+         */
+        function menuCompare(a, b) {
+            var aDate = (Date.parse(a[2]));
+            var bDate = (Date.parse(b[2]));
+            if (aDate == bDate) { //first check date
+                if (a[0] == b[0]) { //then check location
+                    if (a[4] == b[4]) { //then check meal (check by meal_number)
+                        return (a[10] > b[10] ? 1 : -1); //finally check original order
+                    } else return (a[4] > b[4]) ? 1 : -1;
+                } else return (a[0] > b[0]) ? 1 : -1;
+            } else return (aDate > bDate) ? 1 : -1;
+        }
+
+        function renderMenuView(data) {
+            if (data.length === 0) {
+                return '<h3 style="font-style: italic;">No menu items matching this search were found</h3>';
+            }
+            var str = "";
+            var date = data[0][2];
+            var location = data[0][0];
+            str += '<div class="menu-display-date">' + date + '</div><div class="menu-display-group"><h3>' + location + '</h3><div class="menu-display-group"><table class="menu-display-table">';
+            for (var i = 0; i < data.length; ++i) {
+                if (data[i][0] != location || data[i][2] != date) { // if the location or date has changed, close the corresponding tags for locations
+                    location = data[i][0];
+                    str += '</table></div>';
+                    if (data[i][2] != date) { // if the date has changed, set the and close the corresponding tag to start a new date segment
+                        date = data[i][2];
+                        str += '</div><div class="menu-display-date">' + date + '</div><div class="menu-display-group">';
+                    }
+                    str += '<h3>' + location + '</h3><div class="menu-display-group"><table class="menu-display-table"><tr><th>Meal</th><th>Station</th><th>Item</th></tr>';
+
+                }
+                str += '<tr><td>' + data[i][3] + '</td><td>' + data[i][5] + '</td><td>' + data[i][7] + '</td></tr>';
+            }
+            str += '</table></div></div>';
+            return str;
+        }
+
+        /**
+         * Collects checkbox values of a given name and returns the checked values as an array
+         * @param {string} name the name of the checkbox to collect information for
+         * @return {array} an array of values of the checked checkboxes
+         */
+        function getCheckboxValues(name) {
+            checkboxes = jQuery('[name="' + name + '"]:checked');
+            var checked = [];
+            for (var i = 0; i < checkboxes.length; ++i) {
+                checked.push(jQuery(checkboxes[i]).val());
+            }
+            return checked;
+        }
     </script>
 
 

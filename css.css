@@ -50,7 +50,16 @@
   display: flex;
   flex-flow: column wrap;
 }
-
+.column-header {
+  font-weight: bold;
+}
+.popup-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.popup-bldg {
+  font-style: italic;
+}
 .grid {
   display: grid;
   grid-template-rows: 48vh 45vh;
@@ -65,8 +74,12 @@
 
 .grid2 {
   display: grid;
-  grid-template-columns: repeat(5, auto);
+  width: 50%;
+  grid-template-columns: repeat(3, auto);
   grid-auto-rows: auto;
+}
+.money-img {
+  height: 1em;
 }
 .title-group:nth-of-type(1) {
   background-color: green;
@@ -80,4 +93,42 @@
   height: 1vh;
   border-bottom: 1px solid black;
   grid-column: 1 / -1;
+}
+#recenter {
+  background-color: rgba(226, 220, 220, 0.7);
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 10;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
 }
