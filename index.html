@@ -127,7 +127,7 @@
                     </div>
                     <div class="divider"></div>
                     <template v-for="place in places" v-if="place.display">
-                        <div v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
+                        <div v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
                             <div class="name">{{ place[cc.name] }}</div>
                             <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
                             <span v-if="place.dd" class="tooltip">
@@ -148,8 +148,10 @@
                             </span>
 
                         </div>
-                        <div v-if="place.isOpen">open</div>
-                        <div v-else class="w3-text-red">closed</div>
+                        <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
+                            <div v-if="place.isOpen">open</div>
+                            <div v-else class="w3-text-red">closed</div>
+                        </span>
                         <!-- <div class="flex-item hours">
                             <div>Hours:</div>
                             <div>{{place.hours1}}</div>
@@ -161,11 +163,12 @@
                         </div> -->
                         <!-- <a v-if="place.menu" v-bind:href="place.menu" target="_blank">Published Menu</a> -->
                         <!-- <div v-else>no menu</div> -->
-                        <div class="dist w3-center" v-if="place.distance != undefined">
-                            {{round(place.distance,2)}}
-                        </div>
-                        <div v-else>--</div>
-
+                        <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
+                            <div class="dist w3-center" v-if="place.distance != undefined">
+                                {{round(place.distance,2)}}
+                            </div>
+                            <div v-else>--</div>
+                        </span>
                         <div class="divider"></div>
 
                     </template>
