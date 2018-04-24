@@ -5,7 +5,7 @@
     <style>
         #map {
             height: 47vh;
-            width: 50vw;
+            width: 100%;
         }
     </style>
     <link rel="stylesheet" href="./css.css">
@@ -20,76 +20,13 @@
 <body>
     <div id="app">
         <div class="grid">
-            <div class="griptop">
-                <div class="flex-row">
-                    <div class="map" id="map"></div>
-                    <div class="current w3-card-4 w3-margin" v-if="currentSelection">
-                        <div class="w3-xlarge">{{currentSelection[cc.name]}}</div>
+            <!-- <div class="griptop"> -->
+            <!-- <div class="flex-row"> -->
+            <div class="map" id="map"></div>
 
-                        <div v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</div>
-                        <!-- <div>Hours:</div>
-                        <ul>
-                            <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
-                            <li v-if="currentSelection.hours2">{{currentSelection.hours2}}</li>
-                            <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
-                            <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
-                        </ul> -->
-                        <div class="">
-                            <div>Published Menus:</div>
-                            <div class="w3-leftbar w3-margin">
-                                <template class="menu" v-for="item in cc.menus">
-                                    <div class=" w3-margin" v-if="currentSelection[item]">
-                                        <a v-bind:href="currentSelection[item]" target="_blank">{{item}}</a>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                        <div v-if="currentSelection.searchable">
-                            <div class="w3-large">Search Menu</div>
-                            <div class="form-group">
-                                <h4 style="margin-bottom: 0;">
-                                    <label for="date">Date:</label>
-                                </h4>
-                                <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
-                                <small class="form-text text-muted">m/d/yyyy</small>
-                            </div>
-                            &nbsp;
+            <!-- </div> -->
 
-                            <h4 style="margin-bottom: 0;">
-                                <label>Meal:</label>
-                            </h4>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
-                            </div>
-                            <br />
-                            <button class="btn btn-primary" type="submit">Search</button>
-
-                            <hr />
-                            </form>
-
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
+            <!-- </div> -->
 
             <div class="info">
 
@@ -173,6 +110,72 @@
 
                     </template>
                 </div>
+            </div>
+
+
+            <div class="current w3-card-4 w3-margin" v-if="currentSelection">
+                <div class="w3-xlarge">{{currentSelection[cc.name]}}</div>
+
+                <div v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</div>
+                <!-- <div>Hours:</div>
+                        <ul>
+                            <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
+                            <li v-if="currentSelection.hours2">{{currentSelection.hours2}}</li>
+                            <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
+                            <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
+                        </ul> -->
+                <div class="">
+                    <div>Published Menus:</div>
+                    <div class="w3-leftbar w3-margin">
+                        <template class="menu" v-for="item in cc.menus">
+                            <div class=" w3-margin" v-if="currentSelection[item]">
+                                <a v-bind:href="currentSelection[item]" target="_blank">{{item}}</a>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+                <div v-if="currentSelection.searchable">
+                    <div class="w3-large">Search Menu</div>
+                    <div class="form-group">
+                        <h4 style="margin-bottom: 0;">
+                            <label for="date">Date:</label>
+                        </h4>
+                        <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
+                        <small class="form-text text-muted">m/d/yyyy</small>
+                    </div>
+                    &nbsp;
+
+                    <h4 style="margin-bottom: 0;">
+                        <label>Meal:</label>
+                    </h4>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
+                    </div>
+                    <br />
+                    <button class="btn btn-primary" type="submit">Search</button>
+
+                    <hr />
+                    </form>
+
+                </div>
+
             </div>
 
         </div>
