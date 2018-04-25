@@ -25,6 +25,7 @@ let center = { center: { lat: 38.9559656238095, lng: -95.2513079666667 } };
 let fooddata = [
   {
     Name: "Mrs. E's",
+    label: "E",
     Building: "Lewis Hall",
     Street: "1532 Engel Rd.",
     City: "Lawrence, KS 66045",
@@ -60,6 +61,7 @@ let fooddata = [
   },
   {
     Name: "South Dining Commons",
+    label: "S",
     Building: "Oliver and Cora Downs Halls",
     Street: "1517 West 18th Street",
     City: "Lawrence, KS 66045",
@@ -95,6 +97,7 @@ let fooddata = [
   },
   {
     Name: "North College Café",
+    label: "N",
     Building: "GSP Hall",
     Street: "500 W 11th St.",
     City: "Lawrence, KS 66045",
@@ -130,6 +133,7 @@ let fooddata = [
   },
   {
     Name: "The Studio Grill",
+    label: "G",
     Building: "Hashinger Hall",
     Street: "1632 Engel Rd.",
     City: "Lawrence, KS 66045",
@@ -166,6 +170,7 @@ let fooddata = [
   },
   {
     Name: "Southside",
+    label: "S",
     Building: "Oliver and Cora Downs Halls",
     Street: "1815 Naismith Dr.",
     City: "Lawrence, KS 66045",
@@ -201,6 +206,7 @@ let fooddata = [
   },
   {
     Name: "The Market",
+    label: "M",
     Building: "Kansas Union",
     Street: "1301 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -243,6 +249,7 @@ let fooddata = [
   },
   {
     Name: "The Underground",
+    label: "U",
     Building: "Wescoe Hall",
     Street: "1445 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -282,6 +289,7 @@ let fooddata = [
   },
   {
     Name: "Courtside Café",
+    label: "C",
     Building: "DeBruce Center",
     Street: "1647 Naismith Drive",
     City: "Lawrence, KS 66045",
@@ -321,6 +329,7 @@ let fooddata = [
   },
   {
     Name: "Mortar & Pestle Café",
+    label: "M",
     Building: "Pharmacy Building",
     Street: "2010 Becker Dr",
     City: "Lawrence, KS 66045",
@@ -357,6 +366,7 @@ let fooddata = [
   },
   {
     Name: "The Bus Stop",
+    label: "B",
     Building: "Self Hall",
     Street: "1620 Engel Rd.",
     City: "Lawrence, KS 66045",
@@ -393,6 +403,7 @@ let fooddata = [
   },
   {
     Name: "Impromptu Café",
+    label: "I",
     Building: "Kansas Union",
     Street: "1301 Jayhawk Blvd",
     City: "Lawrence, KS 66045",
@@ -429,6 +440,7 @@ let fooddata = [
   },
   {
     Name: "Engineering Commons Jay Break",
+    label: "E",
     Building: "LEEP2",
     Street: "1536 W. 15th St.",
     City: "Lawrence, KS 66045",
@@ -465,6 +477,7 @@ let fooddata = [
   },
   {
     Name: "JRP Jay Break",
+    label: "J",
     Building: "",
     Street: "1122 West Campus Rd.",
     City: "Lawrence, KS 66045",
@@ -501,6 +514,7 @@ let fooddata = [
   },
   {
     Name: "Strong Hall Jay Break",
+    label: "J",
     Building: "",
     Street: "1450 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -537,6 +551,7 @@ let fooddata = [
   },
   {
     Name: "Watson Jay Break",
+    label: "J",
     Building: "",
     Street: "1425 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -573,6 +588,7 @@ let fooddata = [
   },
   {
     Name: "Anschutz Jay Break",
+    label: "J",
     Building: "",
     Street: "1301 Hoch Auditoria Dr.",
     City: "Lawrence, KS 66045",
@@ -609,6 +625,7 @@ let fooddata = [
   },
   {
     Name: "Roasterie",
+    label: "R",
     Building: "Kansas Union",
     Street: "1301 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -645,6 +662,7 @@ let fooddata = [
   },
   {
     Name: "Roasterie",
+    label: "R",
     Building: "DeBruce Center",
     Street: "1647 Naismith Drive",
     City: "Lawrence, KS 66045",
@@ -681,6 +699,7 @@ let fooddata = [
   },
   {
     Name: "Roasterie",
+    label: "R",
     Building: "Wescoe Hall",
     Street: "1445 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
@@ -717,6 +736,7 @@ let fooddata = [
   },
   {
     Name: "Roasterie",
+    label: "R",
     Building: "Pharmacy Building",
     Street: "2010 Becker Dr",
     City: "Lawrence, KS 66045",
@@ -753,6 +773,7 @@ let fooddata = [
   },
   {
     Name: "J Café",
+    label: "J",
     Building: "Capitol Federal Hall",
     Street: "1654 Naismith Dr",
     City: "Lawrence, KS 66045",

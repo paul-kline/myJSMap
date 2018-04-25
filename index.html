@@ -9,7 +9,7 @@
         }
     </style>
     <link rel="stylesheet" href="./css.css">
-    <!-- <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
     <title>KU Dining</title>
@@ -30,18 +30,46 @@
 
             <div class="info">
 
-                <!-- <div class="dataTable">
-                    <table id="myTable">
+                <div class="dataTable">
+
+
+                    <table id="myTable" class="table-header">
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>$</th>
                                 <th>Status</th>
-                                <th>Distance (mi)</th>
+                                <th v-on:click="sortByDist()">Distance (mi)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="place in places" v-on:click="onTouched(place)">
-                                <td>{{place[cc.name]}}</td>
+                            <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
+                                class="table-row">
+                                <td class="">
+                                    <span class="name">{{place[cc.name]}}</span>
+                                    <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+
+                                </td>
+                                <td>
+                                    <span class="flex-rowm">
+                                        <span v-if="place.dd" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                            <span class="tooltiptext">Dining Dollars</span>
+                                        </span>
+                                        <span v-if="place.ms" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                            <span class="tooltiptext">Meal Swipe</span>
+                                        </span>
+                                        <span v-if="place.cash" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                            <span class="tooltiptext">Cash</span>
+                                        </span>
+                                        <span v-if="place.bb" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                            <span class="tooltiptext">Beak 'em Bucks</span>
+                                        </span>
+                                    </span>
+                                </td>
                                 <td v-if="place.isOpen">open</td>
                                 <td v-else>closed</td>
                                 <td v-if="place.distance">{{round(place.distance,2)}}</td>
@@ -50,10 +78,10 @@
                         </tbody>
                     </table>
 
-                </div> -->
+                </div>
 
 
-                <div class="grid2">
+                <div class="grid2" v-if="false">
                     <div class="column-header">Name</div>
                     <div class="column-header">Status</div>
                     <div class="column-header">
@@ -222,7 +250,7 @@
     <script src="./myjs.js"></script>
     <script type="text/javascript" src="./fooddata.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap"></script>
-
+    <script async defer src="./mapfix.js"></script>
 
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script>
