@@ -364,6 +364,20 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
 
+function openTab(evt, tabid) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("tab-contents");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-border-red", "");
+  }
+  document.getElementById(tabid).style.display = "block";
+  evt.currentTarget.firstElementChild.className += " w3-border-red";
+}
+
 // $(document).ready(function() {
 //   placesTable = createTable("myTable");
 // });
