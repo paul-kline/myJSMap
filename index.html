@@ -3,13 +3,28 @@
 
 <head>
     <style>
+        :root {
+            --map-height: 47vh;
+            --rest-height: 51vh;
+        }
+
         #map {
-            height: 47vh;
+            height: var(--map-height);
             width: 100%;
+
+        }
+
+        .map-container {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 8;
         }
     </style>
     <link rel="stylesheet" href="./css.css">
-    <!-- <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"> -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
     <title>KU Dining</title>
@@ -19,41 +34,76 @@
 
 <body>
     <div id="app">
-        <div class="grid">
+        <div class="map-container map">
+            <div class="map" id="map"></div>
+        </div>
+        <div class="space" style="width:100%; height:var(--map-height)">dumb</div>
+        <div class="grid3">
             <!-- <div class="griptop"> -->
             <!-- <div class="flex-row"> -->
-            <div class="map" id="map"></div>
+
+
 
             <!-- </div> -->
 
             <!-- </div> -->
 
-            <div class="info">
+            <div class="info" style="height:var(--rest-height)">
 
-                <!-- <div class="dataTable">
-                    <table id="myTable">
+                <div class="dataTable">
+
+
+                    <table id="myTable" class="table-header">
+                        <col width="45%">
+
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>$</th>
                                 <th>Status</th>
-                                <th>Distance (mi)</th>
+                                <th v-on:click="sortByDist()">Distance (mi)</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="place in places" v-on:click="onTouched(place)">
-                                <td>{{place[cc.name]}}</td>
+                            <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
+                                class="table-row">
+                                <td class="">
+                                    <div class="name">{{place[cc.name]}}</div>
+                                    <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+
+                                </td>
+                                <td>
+                                    <span class="flex-rowm">
+                                        <span v-if="place.dd" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                            <span class="tooltiptext">Dining Dollars</span>
+                                        </span>
+                                        <span v-if="place.ms" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                            <span class="tooltiptext">Meal Swipe</span>
+                                        </span>
+                                        <span v-if="place.cash" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                            <span class="tooltiptext">Cash</span>
+                                        </span>
+                                        <span v-if="place.bb" class="tooltip">
+                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                            <span class="tooltiptext">Beak 'em Bucks</span>
+                                        </span>
+                                    </span>
+                                </td>
                                 <td v-if="place.isOpen">open</td>
-                                <td v-else>closed</td>
+                                <td v-else class="w3-text-red">closed</td>
                                 <td v-if="place.distance">{{round(place.distance,2)}}</td>
                                 <td v-else>--</td>
                             </tr>
                         </tbody>
                     </table>
 
-                </div> -->
+                </div>
 
 
-                <div class="grid2">
+                <div class="grid2" v-if="false">
                     <div class="column-header">Name</div>
                     <div class="column-header">Status</div>
                     <div class="column-header">
@@ -114,9 +164,82 @@
 
 
             <div class="current w3-card-4 w3-margin" v-if="currentSelection">
-                <div class="w3-xlarge">{{currentSelection[cc.name]}}</div>
+                <span class="w3-xlarge">{{currentSelection[cc.name]}}</span>
+                <span class="building" v-if="currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
 
-                <div v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</div>
+                <!-- <span v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</span> -->
+                <div class="w3-row">
+                    <a href="javascript:void(0)" onclick="openTab(event, 'Menu');">
+                        <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-border-red w3-padding">Menu</div>
+                    </a>
+                    <a href="javascript:void(0)" onclick="openTab(event, 'Hours');">
+                        <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">More Hours</div>
+                    </a>
+
+                </div>
+
+                <div id="Menu" class="w3-container tab-contents">
+                    <div class="">
+                        <div>Published Menus:</div>
+                        <div class="w3-leftbar w3-margin">
+                            <template class="menu" v-for="item in cc.menus">
+                                <div class=" w3-margin" v-if="currentSelection[item]">
+                                    <a v-bind:href="currentSelection[item]" target="_blank">{{item == "menu"? "view menu" : item}}</a>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div v-if="currentSelection.searchable">
+                        <div class="w3-large">Search Menu</div>
+                        <div class="form-group">
+                            <h4 style="margin-bottom: 0;">
+                                <label for="date">Date:</label>
+                            </h4>
+                            <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
+                            <small class="form-text text-muted">m/d/yyyy</small>
+                        </div>
+                        &nbsp;
+
+                        <h4 style="margin-bottom: 0;">
+                            <label>Meal:</label>
+                        </h4>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
+                        </div>
+
+                        <div class="checkbox">
+                            <label>
+                                <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
+                        </div>
+                        <br />
+                        <button class="btn btn-primary" type="submit">Search</button>
+
+                        <hr />
+                        </form>
+
+                    </div>
+                </div>
+
+                <div id="Hours" class="w3-container tab-contents" style="display:none">
+                    advanced hours information will be here.
+                </div>
+
+
+
+
+
                 <!-- <div>Hours:</div>
                         <ul>
                             <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
@@ -124,57 +247,8 @@
                             <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
                             <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
                         </ul> -->
-                <div class="">
-                    <div>Published Menus:</div>
-                    <div class="w3-leftbar w3-margin">
-                        <template class="menu" v-for="item in cc.menus">
-                            <div class=" w3-margin" v-if="currentSelection[item]">
-                                <a v-bind:href="currentSelection[item]" target="_blank">{{item}}</a>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-                <div v-if="currentSelection.searchable">
-                    <div class="w3-large">Search Menu</div>
-                    <div class="form-group">
-                        <h4 style="margin-bottom: 0;">
-                            <label for="date">Date:</label>
-                        </h4>
-                        <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
-                        <small class="form-text text-muted">m/d/yyyy</small>
-                    </div>
-                    &nbsp;
 
-                    <h4 style="margin-bottom: 0;">
-                        <label>Meal:</label>
-                    </h4>
 
-                    <div class="checkbox">
-                        <label>
-                            <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
-                    </div>
-
-                    <div class="checkbox">
-                        <label>
-                            <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
-                    </div>
-
-                    <div class="checkbox">
-                        <label>
-                            <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
-                    </div>
-
-                    <div class="checkbox">
-                        <label>
-                            <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
-                    </div>
-                    <br />
-                    <button class="btn btn-primary" type="submit">Search</button>
-
-                    <hr />
-                    </form>
-
-                </div>
 
             </div>
 
@@ -219,10 +293,10 @@
         crossorigin="anonymous"></script>
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="./mapfix.js"></script>
     <script src="./myjs.js"></script>
     <script type="text/javascript" src="./fooddata.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap"></script>
-
 
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script>

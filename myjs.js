@@ -104,7 +104,13 @@ function maploaded(map) {
   console.log("map loaded!");
   app.bounds = new google.maps.LatLngBounds();
   app.map = map;
+  oms = new OverlappingMarkerSpiderfier(map, {
+    markersWontMove: true,
+    markersWontHide: true,
+    basicFormatEvents: true
+  });
   loadIntoMap(map, fooddata);
+
   calcIsOpens();
   //must be after map populated.
   //   initializeAccordions();
@@ -122,20 +128,21 @@ function loadIntoMap(map, results) {
     // map.fitBounds(app.bounds);
     let marker = new google.maps.Marker({
       position: latLng,
-      map: map,
+      // map: map,
       title:
         cur.Name + (cur.Building.length > 0 ? " (" + cur.Building + ")" : ""),
-      zIndex: 1
+      zIndex: 1,
+      label: cur.label
       //   ,
       //   icon: iconisize(icons.dd)
     });
-
+    oms.addMarker(marker);
     cur.marker = marker;
     let infowindow = new google.maps.InfoWindow({
       content: buildPopup(cur)
     });
     cur.infowindow = infowindow;
-    marker.addListener("click", function() {
+    marker.addListener("spider_click", function() {
       onTouched(cur, true);
       //   infowindow.open(map, marker);
     });
@@ -169,6 +176,7 @@ function filterStateChange(places = app.places) {
     if (e.display) {
       if (!e.marker.map) {
         e.marker.setMap(app.map);
+        // oem.addMarker(e.marker);
       }
     } else {
       //don't show it!
@@ -261,6 +269,7 @@ function setDistancesFrom(latlng) {
     el.distance =
       calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371; //to miles.
   });
+  // refreshDataTable();
 }
 
 function sortByDist() {
@@ -359,9 +368,32 @@ function deg2rad(deg) {
   return deg * (Math.PI / 180);
 }
 
+function openTab(evt, tabid) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("tab-contents");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-border-red", "");
+  }
+  document.getElementById(tabid).style.display = "block";
+  evt.currentTarget.firstElementChild.className += " w3-border-red";
+}
+
 // $(document).ready(function() {
-//   $("#myTable").DataTable();
+//   placesTable = createTable("myTable");
 // });
+
+// function refreshDataTable(table = placesTable) {
+//   console.log("resfresh");
+//   table.destroy();
+//   table = createTable();
+// }
+// function createTable(name = "myTable") {
+//   return $(`#${name}`).DataTable();
+// }
 
 function round(number, precision) {
   var shift = function(number, precision, reverseShift) {
