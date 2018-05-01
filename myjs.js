@@ -6,9 +6,77 @@ var app = new Vue({
     places: [],
     userLocation: null,
     map: null,
-    bounds: null //cant yet.
+    bounds: null, //cant yet.
+    sorter: null
+  },
+  computed: {
+    isNameHeader: function() {
+      return {
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "name-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "name-header" &&
+          this.sorter.asc
+      };
+    },
+    isDistanceHeader: function() {
+      return {
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "distance-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "distance-header" &&
+          this.sorter.asc
+      };
+    },
+    isStatusHeader: function() {
+      return {
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "status-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "status-header" &&
+          this.sorter.asc
+      };
+    }
   }
 });
+
+function onSort(elem) {
+  let asc = true;
+  if (app.sorter && app.sorter.id && elem.id == app.sorter.id) {
+    asc = !app.sorter.asc;
+  }
+  console.log("setting sorter id to", elem.id, asc);
+  app.sorter = {
+    id: elem.id,
+    asc: asc
+  };
+  doSort();
+}
+
+function getSorter() {
+  if (app.sorter.id == "name-header") return nameF(app.sorter.asc);
+  if (app.sorter.id == "status-header") return statusF(app.sorter.asc);
+  if (app.sorter.id == "distance-header") return distF(app.sorter.asc);
+  return null;
+}
+function doSort() {
+  placesSort(getSorter());
+}
 function calcIsOpens(date = new Date(), places = app.places) {
   let todayIndex = date.getDay();
   //TODO: check if special hours apply to date.
@@ -131,7 +199,7 @@ function loadIntoMap(map, results) {
       // map: map,
       title:
         cur.Name + (cur.Building.length > 0 ? " (" + cur.Building + ")" : ""),
-      zIndex: 1,
+      zIndex: 3,
       label: cur.label
       //   ,
       //   icon: iconisize(icons.dd)
@@ -273,7 +341,30 @@ function setDistancesFrom(latlng) {
 }
 
 function sortByDist() {
-  app.places.sort((x, y) => x.distance - y.distance);
+  placesSort(distF());
+}
+
+function distF(asc = true) {
+  return _fcreator(asc, "distance");
+}
+
+function _fcreator(asc, prop) {
+  if (asc) {
+    return (x, y) => x[prop] - y[prop];
+  } else {
+    return (x, y) => y[prop] - x[prop];
+  }
+}
+
+function nameF(asc = true) {
+  return _fcreator(asc, cc.name);
+}
+function statusF(asc = true) {
+  return _fcreator(asc, cc.open);
+}
+
+function placesSort(f, arr = app.places) {
+  arr.sort(f);
 }
 
 function locateUser(map) {
@@ -292,11 +383,12 @@ function locateUser(map) {
           map: map,
           title: "Your location",
           icon: "./images/curloc.svg", //iconisize(icons.dd)
-          zIndex: 0
+          zIndex: -1
         });
 
-        // userLoc = marker;
+        userLoc = marker;
         setDistancesFrom(pos);
+        sortByDist();
       },
       function() {
         handleLocationError(true, infoWindow, map.getCenter());

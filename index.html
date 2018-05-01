@@ -58,10 +58,10 @@
 
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>$</th>
-                                <th>Status</th>
-                                <th v-on:click="sortByDist()">Distance (mi)</th>
+                                <th v-bind:class="isNameHeader" id="name-header" class="theader w3-fbutton" onclick="onSort(this)">Name</th>
+                                <th id="cash-header" class="theader">$</th>
+                                <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
+                                <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -256,29 +256,29 @@
         {{ message }}
         <div class="mapcontrols w3-round" id="mapcontrols">
             <div class="filters">
-                <strong>Filters:</strong>
+                <strong>Locations must:</strong>
                 <br>
                 <div>
                     <div>
                         <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
-                        <label for="chkbox-open-now">must be open now</label>
+                        <label for="chkbox-open-now">be open now</label>
 
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
-                        <label for="chkbox-bb">must accept Beak 'em Bucks</label>
+                        <label for="chkbox-bb">accept Beak 'em Bucks</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
-                        <label for="chkbox-dd">must accept Dining Dollars</label>
+                        <label for="chkbox-dd">accept Dining Dollars</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
-                        <label for="chkbox-ms">must accept Meal Plan Swipe</label>
+                        <label for="chkbox-ms">accept Meal Plan Swipes</label>
                     </div>
                     <div>
                         <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
-                        <label for="chkbox-cash">must accept cash</label>
+                        <label for="chkbox-cash">accept cash</label>
                     </div>
                 </div>
 

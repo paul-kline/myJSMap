@@ -76,6 +76,25 @@
   grid-auto-rows: auto;
   grid-gap: 10px;
 }
+.sort-desc::after {
+  /* content: "\2304"; */
+  /* content: " ↓"; */
+  content: " \25BC";
+  text-align: center;
+  vertical-align: middle;
+}
+.sort-asc::after {
+  content: " \25B2";
+}
+
+i {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
 .info {
   overflow-y: scroll;
 }
