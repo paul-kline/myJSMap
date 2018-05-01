@@ -56,7 +56,7 @@ var app = new Vue({
 });
 
 function onSort(elem) {
-  let asc = true;
+  let asc = false;
   if (app.sorter && app.sorter.id && elem.id == app.sorter.id) {
     asc = !app.sorter.asc;
   }
@@ -349,10 +349,23 @@ function distF(asc = true) {
 }
 
 function _fcreator(asc, prop) {
+  let strcmp = (a, b) => {
+    if (a < b) return -1;
+    if (a > b) return 1;
+    return 0;
+  };
+  let numcmp = (x, y) => x - y;
+
   if (asc) {
-    return (x, y) => x[prop] - y[prop];
+    return (x, y) =>
+      typeof x[prop] == "string"
+        ? strcmp(y[prop], x[prop])
+        : numcmp(y[prop], x[prop]);
   } else {
-    return (x, y) => y[prop] - x[prop];
+    return (x, y) =>
+      typeof x[prop] == "string"
+        ? strcmp(x[prop], y[prop])
+        : numcmp(x[prop], y[prop]);
   }
 }
 
