@@ -8,7 +8,8 @@ var app = new Vue({
     map: null,
     bounds: null, //cant yet.
     sorter: null,
-    closed: false
+    closed: false,
+    userMarker: null
   },
   computed: {
     isNameHeader: function() {
@@ -340,16 +341,35 @@ function iconisize(addr) {
     new google.maps.Size(20, 20)
   );
 }
+// function adjustuserLoc(latlng = app.userLocation){
+//   setDistancesFrom(latlng);
+
+// }
 function setDistancesFrom(latlng) {
   app.places.forEach(el => {
     el.distance =
-      calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371; //to miles.
+      calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
+    // el.distance =
+    //   calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371; //to miles.
+    // app.places[i] = app.places[i];
   });
+
+  if (app.sorter && app.sorter.id == "distance-header") {
+    doSort();
+  } else {
+    app.$forceUpdate();
+  }
   // refreshDataTable();
 }
 
 function sortByDist() {
-  placesSort(distF());
+  // console.log("sorting by dist?");
+  // placesSort(distF());
+  app.sorter = {
+    id: "distance-header",
+    asc: false
+  };
+  doSort();
 }
 
 function distF(asc = true) {
@@ -399,15 +419,31 @@ function locateUser(map) {
         };
         app.message = "You have been located! :)";
         app.userLocation = pos;
+        let markerImage = new google.maps.MarkerImage(
+          "./images/curloc.svg",
+          new google.maps.Size(48, 48),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(24, 24)
+        );
         let marker = new google.maps.Marker({
           position: pos,
           map: map,
           title: "Your location",
-          icon: "./images/curloc.svg", //iconisize(icons.dd)
+          icon: markerImage, //"./images/curloc.svg", //iconisize(icons.dd)
+          draggable: true,
           zIndex: -1
+        });
+        marker.addListener("dragend", obj => {
+          console.log(obj);
+          let pos = {
+            lat: obj.latLng.lat(),
+            lng: obj.latLng.lng()
+          };
+          handleNewUserPosition(pos);
         });
 
         userLoc = marker;
+        app.userMarker = marker;
         setDistancesFrom(pos);
         sortByDist();
       },
@@ -415,6 +451,14 @@ function locateUser(map) {
         handleLocationError(true, infoWindow, map.getCenter());
       }
     );
+
+    navigator.geolocation.watchPosition(position => {
+      pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      handleNewUserPosition(pos);
+    });
   } else {
     // Browser doesn't support Geolocation
     handleLocationError(false, infoWindow, map.getCenter());
@@ -428,7 +472,14 @@ function locateUser(map) {
     }
   }
 }
+function handleNewUserPosition(pos) {
+  app.message = "Location updated!";
 
+  console.log("position changed:", pos);
+  app.userMarker.setPosition(pos);
+  app.userLocation = pos;
+  setDistancesFrom(pos);
+}
 //must be done after map loads. accordions are in popups.
 function initializeAccordions() {
   console.log("initing");
