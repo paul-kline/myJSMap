@@ -483,13 +483,14 @@ function handleNewUserPosition(pos) {
 //must be done after map loads. accordions are in popups.
 function initializeAccordions() {
   console.log("initing");
-  let acc = document.getElementsByClassName("accordion");
-  console.log("acc is", acc);
-  for (let i = 0; i < acc.length; i++) {
+  var acc = document.getElementsByClassName("accordion");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    console.log("adding accordion to:", acc[i]);
     acc[i].addEventListener("click", function() {
-      console.log("OUCH", acc[i]);
       this.classList.toggle("active");
-      let panel = this.nextElementSibling;
+      var panel = this.previousElementSibling;
       if (panel.style.maxHeight) {
         panel.style.maxHeight = null;
       } else {
@@ -498,7 +499,7 @@ function initializeAccordions() {
     });
   }
 }
-
+initializeAccordions();
 let icons = {
   //dining dollars
   dd:
