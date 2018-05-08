@@ -274,6 +274,12 @@ function onTouched(place, fromMap = false) {
 
   let marker = app.currentSelection.marker;
   app.currentSelection.infowindow.open(map, marker);
+  //if the click was from the list I want to center the map horizontally now that the info window has been opened.
+  if (!fromMap) {
+    let lat = app.map.getCenter().lat();
+    let lng = app.currentSelection.lng;
+    app.map.setCenter({ lat: lat, lng: lng });
+  }
 }
 function scrollToTop() {
   document.getElementsByClassName("info")[0].scrollTo(0, 0);
