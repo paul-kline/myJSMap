@@ -59,7 +59,7 @@
                         <thead>
                             <tr>
                                 <th v-bind:class="isNameHeader" id="name-header" class="theader w3-fbutton" onclick="onSort(this)">Name</th>
-                                <th id="cash-header" class="theader">$</th>
+                                <th id="cash-header" class="theader">Payment Forms Accepted</th>
                                 <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
                                 <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
                             </tr>
@@ -163,10 +163,11 @@
             </div>
 
 
-            <div class="current w3-card-4 w3-margin" v-if="currentSelection">
+            <div class="current w3-card-4 w3-margin" v-if="currentSelection && !closed">
                 <span class="w3-xlarge">{{currentSelection[cc.name]}}</span>
-                <span class="building" v-if="currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
 
+                <span class="building" v-if="currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
+                <span class="close w3-btn w3-right" v-on:click="closed = true;">&times;</span>
                 <!-- <span v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</span> -->
                 <div class="w3-row">
                     <a href="javascript:void(0)" onclick="openTab(event, 'Menu');">
@@ -203,29 +204,29 @@
                         <h4 style="margin-bottom: 0;">
                             <label>Meal:</label>
                         </h4>
+                        <div class="flex-row">
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                            </div>
 
-                        <div class="checkbox">
-                            <label>
-                                <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
+                                    <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
+                            </div>
+                            <br />
+                            <button class="btn btn-primary" type="submit">Search</button>
                         </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
-                        </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
-                        </div>
-
-                        <div class="checkbox">
-                            <label>
-                                <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
-                        </div>
-                        <br />
-                        <button class="btn btn-primary" type="submit">Search</button>
-
                         <hr />
                         </form>
 

@@ -7,7 +7,8 @@ var app = new Vue({
     userLocation: null,
     map: null,
     bounds: null, //cant yet.
-    sorter: null
+    sorter: null,
+    closed: false
   },
   computed: {
     isNameHeader: function() {
@@ -153,7 +154,7 @@ function genmapControls() {
   app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
     document.getElementById("mapcontrols")
   );
-  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
+  app.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
     document.getElementById("recenter")
   );
 }
@@ -255,6 +256,7 @@ function filterStateChange(places = app.places) {
   });
 }
 function onTouched(place, fromMap = false) {
+  app.closed = false;
   if (app.currentSelection) {
     app.currentSelection.infowindow.close();
   }
