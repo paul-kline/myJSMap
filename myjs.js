@@ -499,7 +499,6 @@ function initializeAccordions() {
     });
   }
 }
-initializeAccordions();
 let icons = {
   //dining dollars
   dd:
@@ -574,3 +573,11 @@ function round(number, precision) {
   };
   return shift(Math.round(shift(number, precision, false)), precision, true);
 }
+
+window.addEventListener(
+  "DOMContentLoaded",
+  function() {
+    initializeAccordions();
+  },
+  false
+);
