@@ -9,7 +9,8 @@ var app = new Vue({
     bounds: null, //cant yet.
     sorter: null,
     closed: false,
-    userMarker: null
+    userMarker: null,
+    onNewUserLocation: null
   },
   computed: {
     isNameHeader: function() {
@@ -440,6 +441,12 @@ function locateUser(map) {
             lng: obj.latLng.lng()
           };
           handleNewUserPosition(pos);
+
+          if (app.onNewUserLocation) {
+            navigator.geolocation.clearWatch(app.onNewUserLocation);
+            app.onNewUserLocation = null;
+          }
+          //turn off recalculations.
         });
 
         userLoc = marker;
@@ -452,7 +459,7 @@ function locateUser(map) {
       }
     );
 
-    navigator.geolocation.watchPosition(position => {
+    app.onNewUserLocation = navigator.geolocation.watchPosition(position => {
       pos = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
