@@ -4,27 +4,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <style>
-        :root {
-            --map-height: 47vh;
-            --rest-height: 51vh;
-        }
-
-        #map {
-            height: var(--map-height);
-            width: 100%;
-
-        }
-
-        .map-container {
-            overflow: hidden;
-            background-color: #333;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 8;
-        }
-    </style>
     <link rel="stylesheet" href="./css.css">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
@@ -35,22 +14,14 @@
 </head>
 
 <body>
-    <div id="app">
-        <div class="map-container map">
-            <div class="map" id="map"></div>
+    <div id="app" class="grid" style="width:100%; height:100%">
+        <div class="map-container">
+            <div class="" id="map"></div>
         </div>
-        <div class="space" style="width:100%; height:var(--map-height)">dumb</div>
-        <div class="grid3">
-            <!-- <div class="griptop"> -->
-            <!-- <div class="flex-row"> -->
+        <!-- <div class="space" style="width:100%; height:var(--map-height)">dumb</div> -->
+        <div class=" bottom grid3">
 
-
-
-            <!-- </div> -->
-
-            <!-- </div> -->
-
-            <div class="info" style="height:var(--rest-height)">
+            <div class="info">
 
                 <div class="dataTable">
 
@@ -141,17 +112,7 @@
                             <div v-if="place.isOpen">open</div>
                             <div v-else class="w3-text-red">closed</div>
                         </span>
-                        <!-- <div class="flex-item hours">
-                            <div>Hours:</div>
-                            <div>{{place.hours1}}</div>
-                            <div>{{place.hours2}}</div>
-                            <div>{{place.hours3}}</div>
-                        </div> -->
-                        <!-- <div class="flex-item phone">
-                            {{place[cc.phone]}}
-                        </div> -->
-                        <!-- <a v-if="place.menu" v-bind:href="place.menu" target="_blank">Published Menu</a> -->
-                        <!-- <div v-else>no menu</div> -->
+
                         <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
                             <div class="dist w3-center" v-if="place.distance != undefined">
                                 {{round(place.distance,2)}}
@@ -239,59 +200,47 @@
                     advanced hours information will be here.
                 </div>
 
-
-
-
-
-                <!-- <div>Hours:</div>
-                        <ul>
-                            <li v-if="currentSelection.hours1">{{currentSelection.hours1}}</li>
-                            <li v-if="currentSelection.hours2">{{currentSelection.hours2}}</li>
-                            <li v-if="currentSelection.hours3">{{currentSelection.hours3}}</li>
-                            <li v-if="currentSelection.hours4">{{currentSelection.hours4}}</li>
-                        </ul> -->
-
-
-
             </div>
 
         </div>
         {{ message }}
-        <div class="mapcontrols w3-round" id="mapcontrols">
-            <div class="filters panel">
-                <strong>Locations must:</strong>
-                <br>
-                <div class="flex">
-                    <div>
-                        <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
-                        <label for="chkbox-open-now">be open now</label>
 
-                    </div>
-                    <div>
-                        <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
-                        <label for="chkbox-bb">accept Beak 'em Bucks</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
-                        <label for="chkbox-dd">accept Dining Dollars</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
-                        <label for="chkbox-ms">accept Meal Plan Swipes</label>
-                    </div>
-                    <div>
-                        <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
-                        <label for="chkbox-cash">accept cash</label>
-                    </div>
+
+    </div>
+    <div class="mapcontrols w3-round" id="mapcontrols">
+        <div class="filters panel">
+            <strong>Locations must:</strong>
+            <br>
+            <div class="flex">
+                <div>
+                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
+                    <label for="chkbox-open-now">be open now</label>
+
                 </div>
-
+                <div>
+                    <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
+                    <label for="chkbox-bb">accept Beak 'em Bucks</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
+                    <label for="chkbox-dd">accept Dining Dollars</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
+                    <label for="chkbox-ms">accept Meal Plan Swipes</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
+                    <label for="chkbox-cash">accept cash</label>
+                </div>
             </div>
-            <div class="w3-btn accordion" style="background-color: rgba(0, 0, 0, 0.7) !important;">Location Filters</div>
 
         </div>
-        <div class="w3-margin">
-            <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
-        </div>
+        <div class="w3-btn accordion" style="background-color: rgba(0, 0, 0, 0.7) !important;">Location Filters</div>
+
+    </div>
+    <div class="w3-margin">
+        <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
