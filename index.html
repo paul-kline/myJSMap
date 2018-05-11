@@ -14,233 +14,232 @@
 </head>
 
 <body>
-    <div id="app" class="grid" style="width:100%; height:100%">
-        <div class="map-container">
-            <div class="" id="map"></div>
+    <div id="app">
+        <div class="map-container map">
+            <div class="map" id="map"></div>
         </div>
-        <!-- <div class="space" style="width:100%; height:var(--map-height)">dumb</div> -->
-        <div class=" bottom grid3">
+        <div class="bottom">
+            <div class="current" style="height:100%">
 
-            <div class="info">
-
-                <div class="dataTable">
-
-
-                    <table id="myTable" class="table-header">
-                        <col width="45%">
-
-                        <thead>
-                            <tr>
-                                <th v-bind:class="isNameHeader" id="name-header" class="theader w3-fbutton" onclick="onSort(this)">Name</th>
-                                <th id="cash-header" class="theader">Payment Forms Accepted</th>
-                                <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
-                                <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
-                                class="table-row">
-                                <td class="">
-                                    <div class="name">{{place[cc.name]}}</div>
-                                    <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
-
-                                </td>
-                                <td>
-                                    <span class="flex-rowm">
-                                        <span v-if="place.dd" class="tooltip">
-                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
-                                            <span class="tooltiptext">Dining Dollars</span>
-                                        </span>
-                                        <span v-if="place.ms" class="tooltip">
-                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
-                                            <span class="tooltiptext">Meal Swipe</span>
-                                        </span>
-                                        <span v-if="place.cash" class="tooltip">
-                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
-                                            <span class="tooltiptext">Cash</span>
-                                        </span>
-                                        <span v-if="place.bb" class="tooltip">
-                                            <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
-                                            <span class="tooltiptext">Beak 'em Bucks</span>
-                                        </span>
-                                    </span>
-                                </td>
-                                <td v-if="place.isOpen">open</td>
-                                <td v-else class="w3-text-red">closed</td>
-                                <td v-if="place.distance">{{round(place.distance,2)}}</td>
-                                <td v-else>--</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-
-                <div class="grid2" v-if="false">
-                    <div class="column-header">Name</div>
-                    <div class="column-header">Status</div>
-                    <div class="column-header">
-                        <div v-if="userLocation">
-                            <span class="w3-button" v-on:click="sortByDist()">Distance (mi)</span>
-                        </div>
-                        <div v-else> Distance (NA)</div>
-                    </div>
+                <span class="">
+                    <span v-if="currentSelection && !closed" class="w3-xlarge">{{currentSelection[cc.name]}}</span>
+                    <span class="building" v-if="currentSelection && currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
                     <div class="divider"></div>
-                    <template v-for="place in places" v-if="place.display">
-                        <div v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
-                            <div class="name">{{ place[cc.name] }}</div>
-                            <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
-                            <span v-if="place.dd" class="tooltip">
-                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
-                                <span class="tooltiptext">Dining Dollars</span>
-                            </span>
-                            <span v-if="place.ms" class="tooltip">
-                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
-                                <span class="tooltiptext">Meal Swipe</span>
-                            </span>
-                            <span v-if="place.cash" class="tooltip">
-                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
-                                <span class="tooltiptext">Cash</span>
-                            </span>
-                            <span v-if="place.bb" class="tooltip">
-                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
-                                <span class="tooltiptext">Beak 'em Bucks</span>
-                            </span>
+                </span>
+                <div class="flex-row-beginning tab-row">
+                    <div class="flex-item tablink w3-bottombar w3-hover-light-grey w3-border-red" onclick="openTab(event, 'Locations');">
+                        Locations
+                    </div>
+
+                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey " onclick="openTab(event, 'Menu');">
+                        Menu
+                    </div>
+                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey" onclick="openTab(event, 'Hours');">
+                        More Hours
+                    </div>
+
+                </div>
+
+                <div id="gestureZone" class="tabs" style="height:100%;">
+                    <div id="Locations" style="height:90%; overflow-y:scroll;" class="info tab-contents">
+                        <div class="dataTable">
+                            <table id="myTable" class="table-header">
+                                <col width="45%">
+                                <thead>
+                                    <tr>
+                                        <th v-bind:class="isNameHeader" id="name-header" class="theader w3-fbutton" onclick="onSort(this)">Name</th>
+                                        <th id="cash-header" class="theader">Payment Forms Accepted</th>
+                                        <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
+                                        <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
+                                        class="table-row">
+                                        <td class="">
+                                            <div class="name">{{place[cc.name]}}</div>
+                                            <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+
+                                        </td>
+                                        <td>
+                                            <span class="flex-rowm">
+                                                <span v-if="place.dd" class="tooltip">
+                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                                    <span class="tooltiptext">Dining Dollars</span>
+                                                </span>
+                                                <span v-if="place.ms" class="tooltip">
+                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                                    <span class="tooltiptext">Meal Swipe</span>
+                                                </span>
+                                                <span v-if="place.cash" class="tooltip">
+                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                                    <span class="tooltiptext">Cash</span>
+                                                </span>
+                                                <span v-if="place.bb" class="tooltip">
+                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                                    <span class="tooltiptext">Beak 'em Bucks</span>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td v-if="place.isOpen">open</td>
+                                        <td v-else class="w3-text-red">closed</td>
+                                        <td v-if="place.distance">{{round(place.distance,2)}}</td>
+                                        <td v-else>--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
 
                         </div>
-                        <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
-                            <div v-if="place.isOpen">open</div>
-                            <div v-else class="w3-text-red">closed</div>
-                        </span>
-
-                        <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
-                            <div class="dist w3-center" v-if="place.distance != undefined">
-                                {{round(place.distance,2)}}
-                            </div>
-                            <div v-else>--</div>
-                        </span>
-                        <div class="divider"></div>
-
-                    </template>
-                </div>
-            </div>
 
 
-            <div class="current w3-card-4 w3-margin" v-if="currentSelection && !closed">
-                <span class="w3-xlarge">{{currentSelection[cc.name]}}</span>
-
-                <span class="building" v-if="currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
-                <span class="close w3-btn w3-right" v-on:click="closed = true;">&times;</span>
-                <!-- <span v-if="!currentSelection.isOpen" class="w3-small" v-else>(Currently Closed)</span> -->
-                <div class="w3-row">
-                    <a href="javascript:void(0)" onclick="openTab(event, 'Menu');">
-                        <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-border-red w3-padding">Menu</div>
-                    </a>
-                    <a href="javascript:void(0)" onclick="openTab(event, 'Hours');">
-                        <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">More Hours</div>
-                    </a>
-
-                </div>
-
-                <div id="Menu" class="w3-container tab-contents">
-                    <div class="">
-                        <div>Published Menus:</div>
-                        <div class="w3-leftbar w3-margin">
-                            <template class="menu" v-for="item in cc.menus">
-                                <div class=" w3-margin" v-if="currentSelection[item]">
-                                    <a v-bind:href="currentSelection[item]" target="_blank">{{item == "menu"? "view menu" : item}}</a>
+                        <div class="grid2" v-if="false">
+                            <div class="column-header">Name</div>
+                            <div class="column-header">Status</div>
+                            <div class="column-header">
+                                <div v-if="userLocation">
+                                    <span class="w3-button" v-on:click="sortByDist()">Distance (mi)</span>
                                 </div>
+                                <div v-else> Distance (NA)</div>
+                            </div>
+                            <div class="divider"></div>
+                            <template v-for="place in places" v-if="place.display">
+                                <div v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
+                                    <div class="name">{{ place[cc.name] }}</div>
+                                    <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+                                    <span v-if="place.dd" class="tooltip">
+                                        <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                        <span class="tooltiptext">Dining Dollars</span>
+                                    </span>
+                                    <span v-if="place.ms" class="tooltip">
+                                        <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                        <span class="tooltiptext">Meal Swipe</span>
+                                    </span>
+                                    <span v-if="place.cash" class="tooltip">
+                                        <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                        <span class="tooltiptext">Cash</span>
+                                    </span>
+                                    <span v-if="place.bb" class="tooltip">
+                                        <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                        <span class="tooltiptext">Beak 'em Bucks</span>
+                                    </span>
+
+                                </div>
+                                <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
+                                    <div v-if="place.isOpen">open</div>
+                                    <div v-else class="w3-text-red">closed</div>
+                                </span>
+                                <span v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)">
+                                    <div class="dist w3-center" v-if="place.distance != undefined">
+                                        {{round(place.distance,2)}}
+                                    </div>
+                                    <div v-else>--</div>
+                                </span>
+                                <div class="divider"></div>
+
                             </template>
                         </div>
                     </div>
-                    <div v-if="currentSelection.searchable">
-                        <div class="w3-large">Search Menu</div>
-                        <div class="form-group">
-                            <h4 style="margin-bottom: 0;">
-                                <label for="date">Date:</label>
-                            </h4>
-                            <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
-                            <small class="form-text text-muted">m/d/yyyy</small>
+
+                    <div id="Menu" class="tab-contents" style="display: none;">
+                        <div v-if="currentSelection && !closed" class="">
+                            <div class="">
+                                <div>Published Menus:</div>
+                                <div class="w3-leftbar w3-margin">
+                                    <template class="menu" v-for="item in cc.menus">
+                                        <div class=" w3-margin" v-if="currentSelection[item]">
+                                            <a v-bind:href="currentSelection[item]" target="_blank">{{item == "menu"? "view menu" : item}}</a>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <div v-if="currentSelection.searchable">
+                                <div class="w3-large">Search Menu</div>
+                                <form>
+                                    <div class="form-group">
+                                        <h4 style="margin-bottom: 0;">
+                                            <label for="date">Date:</label>
+                                        </h4>
+                                        <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
+                                        <small class="form-text text-muted">m/d/yyyy</small>
+                                    </div>
+                                    &nbsp;
+
+                                    <h4 style="margin-bottom: 0;">
+                                        <label>Meal:</label>
+                                    </h4>
+                                    <div class="flex-row">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
+                                        </div>
+
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
+                                        </div>
+
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
+                                        </div>
+
+                                        <div class="checkbox">
+                                            <label>
+                                                <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
+                                        </div>
+                                        <br />
+                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    </div>
+                                    <hr />
+                                </form>
+
+                            </div>
                         </div>
-                        &nbsp;
-
-                        <h4 style="margin-bottom: 0;">
-                            <label>Meal:</label>
-                        </h4>
-                        <div class="flex-row">
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
-                            </div>
-
-                            <div class="checkbox">
-                                <label>
-                                    <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
-                            </div>
-                            <br />
-                            <button class="btn btn-primary" type="submit">Search</button>
-                        </div>
-                        <hr />
-                        </form>
-
+                    </div>
+                    <div v-if="currentSelection && !closed" id="Hours" class="w3-container tab-contents" style="display:none">
+                        advanced hours information will be here.
                     </div>
                 </div>
 
-                <div id="Hours" class="w3-container tab-contents" style="display:none">
-                    advanced hours information will be here.
+
+            </div>
+        </div>
+
+        <div class="mapcontrols w3-round" id="mapcontrols">
+            <div class="filters panel">
+                <strong>Locations must:</strong>
+                <br>
+                <div class="flex">
+                    <div>
+                        <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
+                        <label for="chkbox-open-now">be open now</label>
+
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
+                        <label for="chkbox-bb">accept Beak 'em Bucks</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
+                        <label for="chkbox-dd">accept Dining Dollars</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
+                        <label for="chkbox-ms">accept Meal Plan Swipes</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
+                        <label for="chkbox-cash">accept cash</label>
+                    </div>
                 </div>
 
             </div>
+            <div class="w3-btn accordion" style="background-color: rgba(0, 0, 0, 0.7) !important;">Location Filters</div>
 
         </div>
-        {{ message }}
-
-
-    </div>
-    <div class="mapcontrols w3-round" id="mapcontrols">
-        <div class="filters panel">
-            <strong>Locations must:</strong>
-            <br>
-            <div class="flex">
-                <div>
-                    <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
-                    <label for="chkbox-open-now">be open now</label>
-
-                </div>
-                <div>
-                    <input type="checkbox" name="chkbox-bb" id="chkbox-bb" onclick="filterStateChange()">
-                    <label for="chkbox-bb">accept Beak 'em Bucks</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="chkbox-dd" id="chkbox-dd" onclick="filterStateChange()">
-                    <label for="chkbox-dd">accept Dining Dollars</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="chkbox-ms" id="chkbox-ms" onclick="filterStateChange()">
-                    <label for="chkbox-ms">accept Meal Plan Swipes</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="chkbox-cash" id="chkbox-cash" onclick="filterStateChange()">
-                    <label for="chkbox-cash">accept cash</label>
-                </div>
-            </div>
-
-        </div>
-        <div class="w3-btn accordion" style="background-color: rgba(0, 0, 0, 0.7) !important;">Location Filters</div>
-
-    </div>
-    <div class="w3-margin">
+        <!-- <div class="w3-margin"> -->
         <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
+        <!-- </div> -->
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>

@@ -156,7 +156,7 @@ function genmapControls() {
   app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
     document.getElementById("mapcontrols")
   );
-  app.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
+  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
     document.getElementById("recenter")
   );
 }
@@ -542,15 +542,25 @@ function deg2rad(deg) {
 function openTab(evt, tabid) {
   var i, x, tablinks;
   x = document.getElementsByClassName("tab-contents");
+  tablinks = document.getElementsByClassName("tablink");
+  if (tablinks.length <= 1) {
+    currentTabIndex = 0;
+    return;
+  }
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";
   }
-  tablinks = document.getElementsByClassName("tablink");
+
   for (i = 0; i < x.length; i++) {
     tablinks[i].className = tablinks[i].className.replace(" w3-border-red", "");
+    if (tablinks[i] == evt.currentTarget) {
+      currentTabIndex = i;
+    }
   }
   document.getElementById(tabid).style.display = "block";
-  evt.currentTarget.firstElementChild.className += " w3-border-red";
+  console.log("curTabIndex :", currentTabIndex);
+  // evt.currentTarget.firstElementChild.className += " w3-border-red";
+  evt.currentTarget.className += " w3-border-red";
 }
 
 // $(document).ready(function() {
@@ -585,6 +595,60 @@ window.addEventListener(
   "DOMContentLoaded",
   function() {
     initializeAccordions();
+    initializeSwipe();
   },
   false
 );
+
+let touchObj = { start: [0, 0], end: [0, 0], touchThreshhold: 10 };
+let currentTabIndex = 0;
+function initializeSwipe() {
+  let gestureZone = document.getElementById("gestureZone");
+  gestureZone.addEventListener(
+    "touchstart",
+    function(event) {
+      touchObj.start[0] = event.changedTouches[0].screenX;
+      touchObj.start[1] = event.changedTouches[0].screenY;
+    },
+    false
+  );
+
+  gestureZone.addEventListener(
+    "touchend",
+    function(event) {
+      touchObj.end[0] = event.changedTouches[0].screenX;
+      touchObj.end[1] = event.changedTouches[0].screenY;
+      handleGesture();
+    },
+    false
+  );
+}
+
+function handleGesture() {
+  let hdir = touchObj.end[0] - touchObj.start[0]; //x
+  let vdir = touchObj.end[1] - touchObj.start[1]; // y
+  if (
+    Math.abs(hdir) < 3 * Math.abs(vdir) ||
+    Math.abs(hdir) < touchObj.touchThreshhold
+  ) {
+    console.log("not a swipe!");
+  } else {
+    console.log(hdir);
+    let col = document.getElementsByClassName("tablink");
+    //right is negative, to left is positive
+    if (hdir > 0) {
+      //swipe to left.
+      console.log("left swipe sensed");
+      if (currentTabIndex > 0) {
+        col[currentTabIndex - 1].click();
+      }
+    } else {
+      //swipe to right.
+
+      console.log("right swipe sensed");
+      if (currentTabIndex < col.length - 1) {
+        col[currentTabIndex + 1].click();
+      }
+    }
+  }
+}
