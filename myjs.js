@@ -264,12 +264,17 @@ function onTouched(place, fromMap = false) {
   }
   //order to front of list if from map.
   if (fromMap) {
-    [e] = app.places.splice(app.places.indexOf(place), 1);
-    app.places.unshift(e);
-    console.log(e);
-    app.currentSelection = e;
+    // [e] = app.places.splice(app.places.indexOf(place), 1);
+    // app.places.unshift(e);
+    // console.log(e);
+    // app.currentSelection = e;
+    app.currentSelection = place;
+    setTimeout(() => {
+      document.getElementsByClassName("active")[0].scrollIntoView();
+    }, 100);
+
     //scroll to top:
-    scrollToTop();
+    // scrollToTop();
   } else {
     app.currentSelection = place;
   }
