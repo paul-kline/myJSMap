@@ -10,6 +10,7 @@ body,
   width: 100%;
   height: 100%;
   vertical-align: top;
+  box-sizing: border-box;
 }
 /* .grid {
   display: grid;
@@ -86,8 +87,13 @@ body,
   background-color: #ccc;
 }
 
+.selected-name {
+  font-weight: bold;
+  font-size: 1.3em;
+}
 .tab-row {
   height: 10%;
+  font-weight: bold;
 }
 .no-decoration {
   text-decoration: none;
@@ -108,7 +114,7 @@ body,
 
   flex-flow: row wrap;
   align-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   justify-items: flex-start;
 }
@@ -190,7 +196,7 @@ i {
 }
 .divider {
   width: 100%;
-  height: 1vh;
+  height: 0.1em;
   border-bottom: 1px solid black;
   grid-column: 1 / -1;
 }

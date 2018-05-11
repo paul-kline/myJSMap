@@ -21,8 +21,8 @@
         <div class="bottom">
             <div class="current" style="height:100%">
 
-                <span class="">
-                    <span v-if="currentSelection && !closed" class="w3-xlarge">{{currentSelection[cc.name]}}</span>
+                <span class="" style="height:6.5em">
+                    <span v-if="currentSelection && !closed" class="selected-name">{{currentSelection[cc.name]}}</span>
                     <span class="building" v-if="currentSelection && currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
                     <div class="divider"></div>
                 </span>
@@ -40,8 +40,8 @@
 
                 </div>
 
-                <div id="gestureZone" class="tabs" style="height:100%;">
-                    <div id="Locations" style="height:90%; overflow-y:scroll;" class="info tab-contents">
+                <div id="gestureZone" class="tabs" style="height:80%;">
+                    <div id="Locations" style="height:100%; overflow-y:scroll;" class="info tab-contents">
                         <div class="dataTable">
                             <table id="myTable" class="table-header">
                                 <col width="45%">
