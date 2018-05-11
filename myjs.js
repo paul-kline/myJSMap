@@ -604,6 +604,8 @@ let touchObj = { start: [0, 0], end: [0, 0], touchThreshhold: 10 };
 let currentTabIndex = 0;
 function initializeSwipe() {
   let gestureZone = document.getElementById("gestureZone");
+  gestureZone.addEventListener("scroll", console.log);
+
   gestureZone.addEventListener(
     "touchstart",
     function(event) {
