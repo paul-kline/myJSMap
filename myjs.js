@@ -149,21 +149,29 @@ function initMap() {
   // map.setOptions({ minZoom: 15 });
 
   definePopupClass();
-  let d = document.getElementById("content");
 
+  var mousedUp = false;
+  google.maps.event.addListener(map, "mousedown", function(event) {
+    mousedUp = false;
+    setTimeout(function() {
+      if (mousedUp === false) {
+        console.log("longpress detected", event);
+        handleContextMenu(event, map);
+      }
+    }, 500);
+  });
+  google.maps.event.addListener(map, "dragstart", function(event) {
+    mousedUp = true;
+  });
+  google.maps.event.addListener(map, "mouseup", function(event) {
+    mousedUp = true;
+  });
   //set up context menu:
+  app.d = document.getElementById("content");
   var contextMenu = google.maps.event.addListener(map, "rightclick", function(
     event
   ) {
-    d.innerHTML = `<span style="cursor:pointer;" onclick="rightclickPos(${event.latLng.lat()},${event.latLng.lng()})">I'm here</span><span class="w3-btn" onclick="app.contextMenu.setMap(null)">x</span>`;
-    if (app.contextMenu) {
-      app.contextMenu.setMap(null);
-    } else {
-    }
-    app.contextMenu = new Popup(event.latLng, d);
-    app.contextMenu.setMap(map);
-    window.pop = app.contextMenu;
-    console.log(event);
+    handleContextMenu(event, map);
   });
 
   recenter(map);
@@ -171,7 +179,17 @@ function initMap() {
   affixToTop(map);
   genmapControls();
 }
-
+function handleContextMenu(event, map) {
+  app.d.innerHTML = `<span style="cursor:pointer;" onclick="rightclickPos(${event.latLng.lat()},${event.latLng.lng()})">I'm here</span><span class="w3-btn" onclick="app.contextMenu.setMap(null)">x</span>`;
+  if (app.contextMenu) {
+    app.contextMenu.setMap(null);
+  } else {
+  }
+  app.contextMenu = new Popup(event.latLng, app.d);
+  app.contextMenu.setMap(map);
+  window.pop = app.contextMenu;
+  console.log(event);
+}
 function rightclickPos(lat, lng) {
   handleNewUserPosition({ lat: lat, lng: lng });
 
