@@ -22,12 +22,12 @@
         <div class="bottom">
             <div class="current" style="height:100%">
 
-                <span class="" style="height:6.5em">
+                <div class="w3-center">
                     <span v-if="currentSelection && !closed" class="selected-name">{{currentSelection[cc.name]}}</span>
                     <span class="building" v-if="currentSelection && currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
                     <span class="disclaimer" v-if="currentSelection && currentSelection.Disclaimer">{{currentSelection.Disclaimer}}</span>
                     <div class="divider"></div>
-                </span>
+                </div>
                 <div class="flex-row-beginning tab-row">
                     <div class="flex-item2 tablink w3-bottombar w3-hover-light-grey w3-border-red" onclick="openTab(event, 'Locations');">
                         Locations
