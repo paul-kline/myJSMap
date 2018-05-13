@@ -7,6 +7,7 @@ let cc = {
   street: "Street",
   open: "isOpen",
   description: "Description",
+  residential: "is Residential",
   menus: [
     "menu",
     "Garden Gourmet",
@@ -31,6 +32,7 @@ let fooddata = [
     Description:
       "A staple of KU, Mrs. E's is attached to Lewis Hall on Daisy Hill. It is one of our many residential dining locations throughout campus.",
     Building: "Lewis Hall",
+    Disclaimer: "",
     Street: "1532 Engel Rd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -72,6 +74,7 @@ let fooddata = [
     Description:
       "Shared by Oliver and Downs Halls, South Dining Commons is a brand-new dining center located on campus. It is one of the many residential dining locations on campus.",
     Building: "Oliver and Cora Downs Halls",
+    Disclaimer: "",
     Street: "1517 West 18th Street",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -113,6 +116,7 @@ let fooddata = [
     Description:
       "Located in the recently renovated GSP Hall, North College Café is one of the many residential dining locations located throughout campus.",
     Building: "GSP Hall",
+    Disclaimer: "",
     Street: "500 W 11th St.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -154,6 +158,7 @@ let fooddata = [
     Description:
       "Located in Hashinger Hall, the Studio Grill is one of the many retail dining locations throughout campus.",
     Building: "Hashinger Hall",
+    Disclaimer: "",
     Street: "1632 Engel Rd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -196,6 +201,7 @@ let fooddata = [
     Description:
       "Located in Oliver Hall, Southside is one of the many retail dining locations throughout campus.",
     Building: "Oliver and Cora Downs Halls",
+    Disclaimer: "",
     Street: "1815 Naismith Dr.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -237,6 +243,7 @@ let fooddata = [
     Description:
       "Located in the Kansas Union, The Market is one of the many retail dining locations throughout campus.",
     Building: "Kansas Union",
+    Disclaimer: "",
     Street: "1301 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -285,6 +292,7 @@ let fooddata = [
     Description:
       "A dining staple, The Underground is located in Wescoe Hall. It is one of our many retail dining centers throughout campus.",
     Building: "Wescoe Hall",
+    Disclaimer: "",
     Street: "1445 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -330,6 +338,7 @@ let fooddata = [
     Description:
       "Located in the newly constructed DeBruce Center, the Courtside Café is one of the many retail dining centers throughout campus.",
     Building: "DeBruce Center",
+    Disclaimer: "",
     Street: "1647 Naismith Drive",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -375,6 +384,7 @@ let fooddata = [
     Description:
       "Located in the Pharmacy Building on West Campus, Mortar & Pestle Café is one of the many retail dining centers throughout campus.",
     Building: "Pharmacy Building",
+    Disclaimer: "",
     Street: "2010 Becker Dr",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -417,6 +427,7 @@ let fooddata = [
     Description:
       "Located in the newly constructed Self Hall, the Bus Stop is one of the many retail dining centers throughout campus.",
     Building: "Self Hall",
+    Disclaimer: "",
     Street: "1620 Engel Rd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -459,6 +470,7 @@ let fooddata = [
     Description:
       "Located in the Kansas Union, the Impromptu Café offers more of a restaurant-style feel than many of our other locations. It is one of the many residential dining locations throughout campus.",
     Building: "Kansas Union",
+    Disclaimer: "",
     Street: "1301 Jayhawk Blvd",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -501,6 +513,7 @@ let fooddata = [
     Description:
       "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "LEEP2",
+    Disclaimer: "",
     Street: "1536 W. 15th St.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -543,6 +556,7 @@ let fooddata = [
     Description:
       "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "Joseph R Pearson",
+    Disclaimer: "",
     Street: "1122 West Campus Rd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -585,6 +599,7 @@ let fooddata = [
     Description:
       "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "Strong Hall",
+    Disclaimer: "",
     Street: "1450 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -627,6 +642,7 @@ let fooddata = [
     Description:
       "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "Watson Library",
+    Disclaimer: "",
     Street: "1425 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -669,6 +685,7 @@ let fooddata = [
     Description:
       "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "Anshutz",
+    Disclaimer: "",
     Street: "1301 Hoch Auditoria Dr.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -711,6 +728,7 @@ let fooddata = [
     Description:
       "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
     Building: "Kansas Union",
+    Disclaimer: "",
     Street: "1301 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -753,6 +771,7 @@ let fooddata = [
     Description:
       "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
     Building: "DeBruce Center",
+    Disclaimer: "",
     Street: "1647 Naismith Drive",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -795,6 +814,7 @@ let fooddata = [
     Description:
       "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
     Building: "Wescoe Hall",
+    Disclaimer: "",
     Street: "1445 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -837,6 +857,7 @@ let fooddata = [
     Description:
       "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
     Building: "Pharmacy Building",
+    Disclaimer: "",
     Street: "2010 Becker Dr",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -877,8 +898,9 @@ let fooddata = [
     Name: "J Café",
     label: "J",
     Description:
-      "I don't actually have the J Café on the Dining Guide, but the copy could probably just be the same as the other Jay Breaks",
-    Building: "Capitol Federal Hall-Note: Not managed by KU Dining",
+      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
+    Building: "Capitol Federal Hall",
+    Disclaimer: "Not managed by KU Dining",
     Street: "1654 Naismith Dr",
     City: "Lawrence, KS 66045",
     "Correct lat": "",
@@ -920,6 +942,7 @@ let fooddata = [
     Description:
       "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
     Building: "Burge Union",
+    Disclaimer: "",
     Street: "1565 Irving Hill Rd.",
     City: "Lawrence, KS 66045",
     "Correct lat": "",

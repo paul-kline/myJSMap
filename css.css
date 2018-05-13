@@ -122,11 +122,15 @@ body,
 .flex-item {
   flex: 1;
 }
+.flex-item2 {
+  flex: 2;
+}
 .name-col {
   min-width: 150px;
 }
 .flex-row-beginning {
   display: flex;
+  white-space: nowrap;
 
   flex-flow: row wrap;
   align-content: flex-start;
@@ -134,7 +138,13 @@ body,
   justify-content: space-between;
   justify-items: flex-start;
 }
-
+.disclaimer {
+  font-size: 0.7em;
+  font-style: italic;
+}
+.disclaimer:before {
+  content: "*";
+}
 .panel {
   /* padding: 0 18px; */
   padding: 0 5px;

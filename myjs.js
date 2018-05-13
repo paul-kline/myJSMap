@@ -55,6 +55,9 @@ var app = new Vue({
           this.sorter.id == "status-header" &&
           this.sorter.asc
       };
+    },
+    filterSize: function() {
+      return this.places.filter(x => x.display).length;
     }
   }
 });
@@ -357,22 +360,32 @@ function getCheckBox(str) {
   if (str == "cash") r = "chkbox-cash";
   if (str == "ms") r = "chkbox-ms";
   if (str == "dd") r = "chkbox-dd";
+  if (str == "retail") r = "chkbox-retail";
   return document.getElementById(r);
 }
 function filterStateChange(places = app.places) {
   let isOpenOnly = getCheckBox("open").checked;
+  let isRetailOnly = getCheckBox("retail").checked;
   let mustbb = getCheckBox("bb").checked;
   let mustCash = getCheckBox("cash").checked;
   let mustms = getCheckBox("ms").checked;
   let mustdd = getCheckBox("dd").checked;
+
   places.forEach(e => {
     let openReq = isOpenOnly ? e.isOpen : true;
+    let retailReq = isRetailOnly ? !e[cc.residential] : true;
     let mustbbReq = mustbb ? e.bb : true;
     let mustCashReq = mustCash ? e.cash : true;
     let mustmsReq = mustms ? e.ms : true;
     let mustddReq = mustdd ? e.dd : true;
 
-    e.display = openReq && mustbbReq && mustCashReq && mustmsReq && mustddReq;
+    e.display =
+      openReq &&
+      retailReq &&
+      mustbbReq &&
+      mustCashReq &&
+      mustmsReq &&
+      mustddReq;
 
     if (e.display) {
       if (!e.marker.map) {

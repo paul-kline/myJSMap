@@ -24,11 +24,13 @@
                 <span class="" style="height:6.5em">
                     <span v-if="currentSelection && !closed" class="selected-name">{{currentSelection[cc.name]}}</span>
                     <span class="building" v-if="currentSelection && currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
+                    <span class="disclaimer" v-if="currentSelection && currentSelection.Disclaimer">{{currentSelection.Disclaimer}}</span>
                     <div class="divider"></div>
                 </span>
                 <div class="flex-row-beginning tab-row">
-                    <div class="flex-item tablink w3-bottombar w3-hover-light-grey w3-border-red" onclick="openTab(event, 'Locations');">
+                    <div class="flex-item2 tablink w3-bottombar w3-hover-light-grey w3-border-red" onclick="openTab(event, 'Locations');">
                         Locations
+                        <span style="font-weight: normal">({{filterSize}})</span>
                     </div>
 
                     <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey " onclick="openTab(event, 'Menu');">
@@ -47,7 +49,7 @@
                     <div id="Locations" style="height:100%; overflow-y:scroll;" class="info tab-contents">
                         <div class="dataTable">
                             <table id="myTable" class="table-header">
-                                <col width="32%">
+                                <col width="38%">
                                 <thead class="w3-text-gray">
                                     <tr>
                                         <th v-bind:class="isNameHeader" id="name-header" class="name-col theader w3-fbutton" onclick="onSort(this)">Name</th>
@@ -62,6 +64,7 @@
                                         <td>
                                             <div class="name">{{place[cc.name]}}</div>
                                             <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+                                            <span class="disclaimer" v-if="place.Disclaimer">{{place.Disclaimer}}</span>
 
                                         </td>
                                         <td>
@@ -219,6 +222,11 @@
                     <div>
                         <input type="checkbox" name="chkbox-open-now" id="chkbox-open-now" onclick="filterStateChange()">
                         <label for="chkbox-open-now">be open now</label>
+
+                    </div>
+                    <div>
+                        <input type="checkbox" name="chkbox-retail" id="chkbox-retail" onclick="filterStateChange()">
+                        <label for="chkbox-retail">be retail only</label>
 
                     </div>
                     <div>
