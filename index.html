@@ -15,8 +15,12 @@
 
 <body>
     <div id="app">
-        <div class="map-container map">
-            <div class="map" id="map"></div>
+        <div class="map-container map" oncontextmenu="(e)=>{e.preventDefault();
+                e.stopPropagation();
+                return false;}">
+            <div class="map" oncontextmenu="(e)=>{e.preventDefault();
+                    e.stopPropagation();
+                    return false;}" id="map"></div>
         </div>
         <div class="bottom">
             <div class="current" style="height:100%">
@@ -35,7 +39,10 @@
                         Menu
                     </div>
                     <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey" onclick="openTab(event, 'Hours');">
-                        More Hours
+                        Hours
+                    </div>
+                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey" onclick="openTab(event, 'About');">
+                        About
                     </div>
 
                 </div>
@@ -44,10 +51,10 @@
                     <div id="Locations" style="height:100%; overflow-y:scroll;" class="info tab-contents">
                         <div class="dataTable">
                             <table id="myTable" class="table-header">
-                                <col width="45%">
+                                <col width="40%">
                                 <thead class="w3-text-gray">
                                     <tr>
-                                        <th v-bind:class="isNameHeader" id="name-header" class="theader w3-fbutton" onclick="onSort(this)">Name</th>
+                                        <th v-bind:class="isNameHeader" id="name-header" class="name-col theader w3-fbutton" onclick="onSort(this)">Name</th>
                                         <th id="cash-header" class="theader">Payment Forms Accepted</th>
                                         <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
                                         <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
@@ -55,8 +62,8 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
-                                        class="table-row">
-                                        <td class="">
+                                        class="name-col table-row">
+                                        <td>
                                             <div class="name">{{place[cc.name]}}</div>
                                             <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
 
@@ -199,6 +206,9 @@
                     <div v-if="currentSelection && !closed" id="Hours" class="w3-container tab-contents" style="display:none">
                         advanced hours information will be here.
                     </div>
+                    <div v-if="currentSelection && !closed" id="About" class="w3-container tab-contents" style="display:none">
+                        {{currentSelection[cc.description]}}
+                    </div>
                 </div>
 
 
@@ -240,6 +250,9 @@
         <!-- <div class="w3-margin"> -->
         <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
         <!-- </div> -->
+        <div id="content">
+            <span style="cursor:pointer;">I'm here</span>
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>

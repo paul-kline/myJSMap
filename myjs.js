@@ -10,7 +10,8 @@ var app = new Vue({
     sorter: null,
     closed: false,
     userMarker: null,
-    onNewUserLocation: null
+    onNewUserLocation: null,
+    contextMenu: null
   },
   computed: {
     isNameHeader: function() {
@@ -138,7 +139,6 @@ function recenter(map = app.map) {
   map.setZoom(15);
 }
 function initMap() {
-  var uluru = { lat: -25.363, lng: 131.044 };
   var map = new google.maps.Map(document.getElementById("map"), {
     // zoom: 15,
     // center: center.center,
@@ -147,10 +147,120 @@ function initMap() {
     // gestureHandling: "greedy"
   });
   // map.setOptions({ minZoom: 15 });
+
+  definePopupClass();
+  let d = document.getElementById("content");
+
+  //set up context menu:
+  var contextMenu = google.maps.event.addListener(map, "rightclick", function(
+    event
+  ) {
+    d.innerHTML = `<span style="cursor:pointer;" onclick="rightclickPos(${event.latLng.lat()},${event.latLng.lng()})">I'm here</span><span class="w3-btn" onclick="app.contextMenu.setMap(null)">x</span>`;
+    if (app.contextMenu) {
+      app.contextMenu.setMap(null);
+    } else {
+    }
+    app.contextMenu = new Popup(event.latLng, d);
+    app.contextMenu.setMap(map);
+    window.pop = app.contextMenu;
+    console.log(event);
+  });
+
   recenter(map);
   maploaded(map);
   affixToTop(map);
   genmapControls();
+}
+
+function rightclickPos(lat, lng) {
+  handleNewUserPosition({ lat: lat, lng: lng });
+
+  if (app.onNewUserLocation) {
+    navigator.geolocation.clearWatch(app.onNewUserLocation);
+    app.onNewUserLocation = null;
+  }
+  if (app.contextMenu) {
+    app.contextMenu.setMap(null);
+  }
+}
+/** Defines the Popup class. */
+function definePopupClass() {
+  /**
+   * A customized popup on the map.
+   * @param {!google.maps.LatLng} position
+   * @param {!Element} content
+   * @constructor
+   * @extends {google.maps.OverlayView}
+   */
+  Popup = function(position, content) {
+    this.position = position;
+
+    content.classList.add("popup-bubble-content");
+
+    var pixelOffset = document.createElement("div");
+    pixelOffset.classList.add("popup-bubble-anchor");
+    pixelOffset.appendChild(content);
+
+    this.anchor = document.createElement("div");
+    this.anchor.classList.add("popup-tip-anchor");
+    this.anchor.appendChild(pixelOffset);
+
+    // Optionally stop clicks, etc., from bubbling up to the map.
+    this.stopEventPropagation();
+  };
+  // NOTE: google.maps.OverlayView is only defined once the Maps API has
+  // loaded. That is why Popup is defined inside initMap().
+  Popup.prototype = Object.create(google.maps.OverlayView.prototype);
+
+  /** Called when the popup is added to the map. */
+  Popup.prototype.onAdd = function() {
+    this.getPanes().floatPane.appendChild(this.anchor);
+  };
+
+  /** Called when the popup is removed from the map. */
+  Popup.prototype.onRemove = function() {
+    if (this.anchor.parentElement) {
+      this.anchor.parentElement.removeChild(this.anchor);
+    }
+  };
+
+  /** Called when the popup needs to draw itself. */
+  Popup.prototype.draw = function() {
+    var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
+    // Hide the popup when it is far out of view.
+    var display =
+      Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
+        ? "block"
+        : "none";
+
+    if (display === "block") {
+      this.anchor.style.left = divPosition.x + "px";
+      this.anchor.style.top = divPosition.y + "px";
+    }
+    if (this.anchor.style.display !== display) {
+      this.anchor.style.display = display;
+    }
+  };
+
+  /** Stops clicks/drags from bubbling up to the map. */
+  Popup.prototype.stopEventPropagation = function() {
+    var anchor = this.anchor;
+    anchor.style.cursor = "auto";
+
+    [
+      "click",
+      "dblclick",
+      "contextmenu",
+      "wheel",
+      "mousedown",
+      "touchstart",
+      "pointerdown"
+    ].forEach(function(event) {
+      anchor.addEventListener(event, function(e) {
+        e.stopPropagation();
+      });
+    });
+  };
 }
 function genmapControls() {
   app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
@@ -171,7 +281,8 @@ function maploaded(map) {
   fooddata.forEach(e => {
     e.directionsUrl = buildDirectionsLink(e);
     e.display = true;
-  });
+  }); // can I move this earlier?
+
   console.log("map loaded!");
   app.bounds = new google.maps.LatLngBounds();
   app.map = map;
@@ -347,17 +458,11 @@ function iconisize(addr) {
     new google.maps.Size(20, 20)
   );
 }
-// function adjustuserLoc(latlng = app.userLocation){
-//   setDistancesFrom(latlng);
 
-// }
 function setDistancesFrom(latlng) {
   app.places.forEach(el => {
     el.distance =
       calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
-    // el.distance =
-    //   calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371; //to miles.
-    // app.places[i] = app.places[i];
   });
 
   if (app.sorter && app.sorter.id == "distance-header") {
@@ -365,12 +470,9 @@ function setDistancesFrom(latlng) {
   } else {
     app.$forceUpdate();
   }
-  // refreshDataTable();
 }
 
 function sortByDist() {
-  // console.log("sorting by dist?");
-  // placesSort(distF());
   app.sorter = {
     id: "distance-header",
     asc: false

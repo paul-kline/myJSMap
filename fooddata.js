@@ -6,6 +6,7 @@ let cc = {
   city: "City",
   street: "Street",
   open: "isOpen",
+  description: "Description",
   menus: [
     "menu",
     "Garden Gourmet",
