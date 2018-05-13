@@ -82,7 +82,7 @@ body,
   transition: 0.4s;
 }
 
-.active,
+.active-acc,
 .accordion:hover {
   background-color: #ccc;
 }

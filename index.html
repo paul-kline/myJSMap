@@ -15,12 +15,8 @@
 
 <body>
     <div id="app">
-        <div class="map-container map" oncontextmenu="(e)=>{e.preventDefault();
-                e.stopPropagation();
-                return false;}">
-            <div class="map" oncontextmenu="(e)=>{e.preventDefault();
-                    e.stopPropagation();
-                    return false;}" id="map"></div>
+        <div class="map-container map">
+            <div class="map" id="map"></div>
         </div>
         <div class="bottom">
             <div class="current" style="height:100%">
@@ -51,7 +47,7 @@
                     <div id="Locations" style="height:100%; overflow-y:scroll;" class="info tab-contents">
                         <div class="dataTable">
                             <table id="myTable" class="table-header">
-                                <col width="40%">
+                                <col width="32%">
                                 <thead class="w3-text-gray">
                                     <tr>
                                         <th v-bind:class="isNameHeader" id="name-header" class="name-col theader w3-fbutton" onclick="onSort(this)">Name</th>
@@ -250,7 +246,7 @@
         <!-- <div class="w3-margin"> -->
         <button id="recenter" class="w3-button w3-round" onclick="recenter()">re-center</button>
         <!-- </div> -->
-        <div id="content">
+        <div id="content" style="display:none;">
             <span style="cursor:pointer;">I'm here</span>
         </div>
     </div>

@@ -180,7 +180,8 @@ function initMap() {
   genmapControls();
 }
 function handleContextMenu(event, map) {
-  app.d.innerHTML = `<span style="cursor:pointer;" onclick="rightclickPos(${event.latLng.lat()},${event.latLng.lng()})">I'm here</span><span class="w3-btn" onclick="app.contextMenu.setMap(null)">x</span>`;
+  app.d.innerHTML = `<span style="cursor:pointer;" onclick="rightclickPos(${event.latLng.lat()},${event.latLng.lng()})">I'm here</span><span class="w3-btn" onclick="app.contextMenu.setMap(null)">&times;</span>`;
+  app.d.style.display = "block";
   if (app.contextMenu) {
     app.contextMenu.setMap(null);
   } else {
@@ -621,7 +622,7 @@ function initializeAccordions() {
   for (i = 0; i < acc.length; i++) {
     console.log("adding accordion to:", acc[i]);
     acc[i].addEventListener("click", function() {
-      this.classList.toggle("active");
+      this.classList.toggle("active-acc");
       var panel = this.previousElementSibling;
       if (panel.style.maxHeight) {
         panel.style.maxHeight = null;
