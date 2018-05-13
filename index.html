@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css.css">
+    <link rel="stylesheet" href="./w3.css">
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
     <title>KU Dining</title>
     <link href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css" rel="stylesheet" />
@@ -148,7 +149,7 @@
 
                     <div id="Menu" class="tab-contents" style="display: none;">
                         <div v-if="currentSelection && !closed" class="">
-                            <div class="">
+                            <div v-if="currentSelectionHasPublishedMenues" class="">
                                 <div>Published Menus:</div>
                                 <div class="w3-leftbar w3-margin">
                                     <template class="menu" v-for="item in cc.menus">
@@ -159,46 +160,41 @@
                                 </div>
                             </div>
                             <div v-if="currentSelection.searchable">
-                                <div class="w3-large">Search Menu</div>
-                                <form>
-                                    <div class="form-group">
-                                        <h4 style="margin-bottom: 0;">
-                                            <label for="date">Date:</label>
-                                        </h4>
-                                        <input class="form-control" id="menu-date" maxlength="10" placeholder="" size="10" style="width: auto" type="text" />
-                                        <small class="form-text text-muted">m/d/yyyy</small>
+                                <div class="divider"></div>
+                                <div class="w3-large w3-center">Search</div>
+
+                                <div class="flex-row-left">
+
+                                    <div>Date:</div>
+                                    <input type="date" id="menu-date" v-bind:value="today" />
+                                </div>
+
+
+
+                                <div class="flex-row-left">
+                                    <label>Meal:</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="meal" type="checkbox" value="BREAKFAST" checked/>Breakfast&nbsp;</label>
                                     </div>
-                                    &nbsp;
 
-                                    <h4 style="margin-bottom: 0;">
-                                        <label>Meal:</label>
-                                    </h4>
-                                    <div class="flex-row">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="meal" type="checkbox" value="BREAKFAST" />&nbsp;Breakfast</label>
-                                        </div>
-
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="meal" type="checkbox" value="BRUNCH" />&nbsp;Brunch</label>
-                                        </div>
-
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="meal" type="checkbox" value="LUNCH" />&nbsp;Lunch</label>
-                                        </div>
-
-                                        <div class="checkbox">
-                                            <label>
-                                                <input name="meal" type="checkbox" value="DINNER" />&nbsp;Dinner</label>
-                                        </div>
-                                        <br />
-                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="meal" type="checkbox" value="BRUNCH" checked/>Brunch&nbsp;</label>
                                     </div>
-                                    <hr />
-                                </form>
 
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="meal" type="checkbox" value="LUNCH" checked/>Lunch&nbsp;</label>
+                                    </div>
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="meal" type="checkbox" value="DINNER" checked/>Dinner&nbsp;</label>
+                                    </div>
+                                </div>
+                                <button class="w3-button w3-black w3-round-large" onclick="doSearch()">Search</button>
+                                <div id="menu-results"></div>
                             </div>
                         </div>
                     </div>
@@ -269,12 +265,6 @@
 
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script>
-        jQuery(function () {
-            jQuery('#menu-date').datepicker({
-                dateFormat: 'm/d/yy',
-                defaultDate: 0
-            });
-        });
 
         /**
          * Loads external page data for the given url.
@@ -327,7 +317,19 @@
             });
             console.log(data);
             data.sort(menuCompare);
+            console.log("heres the search results", data);
             jQuery('#menu-results').html(renderMenuView(data));
+            let options = {
+                paging: false,
+                scrollY: "300px",
+                select: true
+
+            }
+            jQuery('.menu-display-table').DataTable(options);
+            jQuery('.menu-display-table').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+
         }
 
         /**
@@ -345,13 +347,18 @@
          * @return {object} An object with any defined filters and their values
          */
         function getFilters() {
-            var filters = {};
-            var locations = getCheckboxValues('location');
-            if (locations.length) {
-                filters.service_unit = locations.join('|');
-            }
+            let filters = {};
+            filters.service_unit = app.currentSelection.searchable;
+
             if (jQuery('#menu-date').val()) {
-                filters.eventdate = jQuery('#menu-date').val();
+                let ds = jQuery('#menu-date').val().split("-");
+                //year, month, date
+
+                //sigh.... john's api needs single digits??? ....
+                ds[1] = ds[1][0] == "0" ? ds[1].substring(1) : ds[1];
+                ds[0] = ds[0][0] == "0" ? ds[0].substring(1) : ds[0];
+                //event date expects month, date, year 
+                filters.eventdate = ds[1] + "/" + ds[2] + "/" + ds[0];
             }
             var meals = getCheckboxValues('meal');
             if (meals.length) {
@@ -365,6 +372,9 @@
          * Handles submission of the menu query, collecting filters and submitting the ajax request
          * @return {boolean} always false to stop the form from submitting and the page from refreshing
          */
+        function doSearch() {
+            submitQuery();
+        }
         function submitQuery() {
             var filters = getFilters();
             var url = 'https://dept.ku.edu/~union/cgi-bin/wordpress/dining-menus/ku-dining-menus.php?' + jQuery.param(filters);
@@ -391,7 +401,11 @@
                 } else return (a[0] > b[0]) ? 1 : -1;
             } else return (aDate > bDate) ? 1 : -1;
         }
-
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            });
+        }
         function renderMenuView(data) {
             if (data.length === 0) {
                 return '<h3 style="font-style: italic;">No menu items matching this search were found</h3>';
@@ -399,21 +413,30 @@
             var str = "";
             var date = data[0][2];
             var location = data[0][0];
-            str += '<div class="menu-display-date">' + date + '</div><div class="menu-display-group"><h3>' + location + '</h3><div class="menu-display-group"><table class="menu-display-table">';
+            str += '<table class="menu-display-table stripe hover">';
+            header = `<thead>
+                        <tr>
+                            <th>Meal</th>
+                            <th>Station</th>
+                            <th>Item</th>
+                        </tr>
+                    </thead>`;
+            str += header + "<tbody>";
             for (var i = 0; i < data.length; ++i) {
                 if (data[i][0] != location || data[i][2] != date) { // if the location or date has changed, close the corresponding tags for locations
                     location = data[i][0];
-                    str += '</table></div>';
+                    console.log("should NEVER GET HERE");
+                    str += '</tbody></table>';
                     if (data[i][2] != date) { // if the date has changed, set the and close the corresponding tag to start a new date segment
                         date = data[i][2];
-                        str += '</div><div class="menu-display-date">' + date + '</div><div class="menu-display-group">';
+                        str += '<div class="menu-display-date">' + date + '</div>';
                     }
-                    str += '<h3>' + location + '</h3><div class="menu-display-group"><table class="menu-display-table"><tr><th>Meal</th><th>Station</th><th>Item</th></tr>';
+                    str += '<h3>' + location + `</h3><table class="menu-display-table">${header}<tbody>`;
 
                 }
-                str += '<tr><td>' + data[i][3] + '</td><td>' + data[i][5] + '</td><td>' + data[i][7] + '</td></tr>';
+                str += '<tr><td>' + toTitleCase(data[i][3]) + '</td><td>' + toTitleCase(data[i][5]) + '</td><td>' + toTitleCase(data[i][7]) + '</td></tr>';
             }
-            str += '</table></div></div>';
+            str += '</tbody></table>';
             return str;
         }
 

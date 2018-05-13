@@ -14,6 +14,13 @@ var app = new Vue({
     contextMenu: null
   },
   computed: {
+    today: function() {
+      let d = new Date();
+      let y = d.getFullYear();
+      let m = d.getMonth() + 1;
+      let dd = d.getDate();
+      return y + "-" + two(m) + "-" + two(dd);
+    },
     isNameHeader: function() {
       return {
         "sort-desc":
@@ -58,10 +65,19 @@ var app = new Vue({
     },
     filterSize: function() {
       return this.places.filter(x => x.display).length;
+    },
+    currentSelectionHasPublishedMenues: function() {
+      for (const key in cc.menus) {
+        // console.log("key", key);
+        if (this.currentSelection[cc.menus[key]]) return true;
+      }
+      return false;
     }
   }
 });
-
+function two(x) {
+  return x.toString().length < 2 ? "0" + x : x;
+}
 function onSort(elem) {
   let asc = false;
   if (app.sorter && app.sorter.id && elem.id == app.sorter.id) {
