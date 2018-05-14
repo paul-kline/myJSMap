@@ -820,10 +820,11 @@ function computeIntervalTitle(interval) {
   let tod = interval.to.date; //.split(" ")[0];
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
-  return `${interval.name} (${fromdd.toLocaleDateString(
+  return `${interval.name} 
+  (${fromdd.toLocaleDateString("en-US", options)} - ${todd.toLocaleDateString(
     "en-US",
     options
-  )} - ${todd.toLocaleDateString("en-US", options)}) `;
+  )}) `;
 }
 function initializeAccordidowns() {
   console.log("initing downs");
@@ -943,7 +944,7 @@ window.addEventListener(
   false
 );
 
-let touchObj = { start: [0, 0], end: [0, 0], touchThreshhold: 10 };
+let touchObj = { start: [0, 0], end: [0, 0], touchThreshhold: 50 };
 let currentTabIndex = 0;
 function initializeSwipe() {
   let gestureZone = document.getElementById("gestureZone");
