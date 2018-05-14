@@ -1,4 +1,4 @@
-let hoursEndpoint = "https://kjhk.pauliankline.com/paul/myapi/hours.php";
+let hoursEndpoint = "https://kjhk.org/zd/hours.php";
 
 var app = new Vue({
   el: "#app",
