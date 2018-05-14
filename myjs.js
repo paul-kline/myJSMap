@@ -647,7 +647,11 @@ function buildPopup(obj) {
       <div id="bodyContent">
       <div><a href="${obj.directionsUrl}" target="_blank">Directions</a></div>
       ${phone}
-         <strong>Hours</strong>
+         <strong>Hours</strong>${
+           obj.currentHours
+             ? ""
+             : '<div style="font-style:italic"> *may not be accurate</div>'
+         }
           ${hours}      
       </div>
     </div>
@@ -731,35 +735,8 @@ function locateUser(map) {
         };
         app.message = "You have been located! :)";
         app.userLocation = pos;
-        let markerImage = new google.maps.MarkerImage(
-          "./images/curloc.svg",
-          new google.maps.Size(48, 48),
-          new google.maps.Point(0, 0),
-          new google.maps.Point(24, 24)
-        );
-        let marker = new google.maps.Marker({
-          position: pos,
-          map: map,
-          title: "Your location",
-          icon: markerImage, //"./images/curloc.svg", //iconisize(icons.dd)
-          draggable: true,
-          zIndex: -1
-        });
-        marker.addListener("dragend", obj => {
-          console.log(obj);
-          let pos = {
-            lat: obj.latLng.lat(),
-            lng: obj.latLng.lng()
-          };
-          handleNewUserPosition(pos);
 
-          if (app.onNewUserLocation) {
-            navigator.geolocation.clearWatch(app.onNewUserLocation);
-            app.onNewUserLocation = null;
-          }
-          //turn off recalculations.
-        });
-
+        let marker = createUserMarker(map, pos);
         userLoc = marker;
         app.userMarker = marker;
         setDistancesFrom(pos);
@@ -790,10 +767,45 @@ function locateUser(map) {
     }
   }
 }
+function createUserMarker(map, pos) {
+  let markerImage = new google.maps.MarkerImage(
+    "./images/curloc.svg",
+    new google.maps.Size(48, 48),
+    new google.maps.Point(0, 0),
+    new google.maps.Point(24, 24)
+  );
+  let marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    title: "Your location",
+    icon: markerImage, //"./images/curloc.svg", //iconisize(icons.dd)
+    draggable: true,
+    zIndex: -1
+  });
+  marker.addListener("dragend", obj => {
+    console.log(obj);
+    let pos = {
+      lat: obj.latLng.lat(),
+      lng: obj.latLng.lng()
+    };
+    handleNewUserPosition(pos);
+
+    if (app.onNewUserLocation) {
+      navigator.geolocation.clearWatch(app.onNewUserLocation);
+      app.onNewUserLocation = null;
+    }
+
+    //turn off recalculations.
+  });
+  return marker;
+}
 function handleNewUserPosition(pos) {
   app.message = "Location updated!";
 
   console.log("position changed:", pos);
+  if (!app.userMarker) {
+    app.userMarker = createUserMarker(app.map, pos);
+  }
   app.userMarker.setPosition(pos);
   app.userLocation = pos;
   setDistancesFrom(pos);
