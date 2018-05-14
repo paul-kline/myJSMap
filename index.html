@@ -191,7 +191,7 @@
                                     </div>
                                 </div>
                                 <button class="w3-button w3-black w3-round-large" onclick="doSearch()">Search</button>
-                                <div id="menu-results"></div>
+                                <div v-if="showSearchResults" id="menu-results"></div>
                             </div>
                         </div>
                     </div>
@@ -388,6 +388,7 @@
          * @return {boolean} always false to stop the form from submitting and the page from refreshing
          */
         function doSearch() {
+            app.showSearchResults = true;
             submitQuery();
         }
         function submitQuery() {

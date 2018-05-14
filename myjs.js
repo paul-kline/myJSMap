@@ -13,10 +13,12 @@ var app = new Vue({
     closed: false,
     userMarker: null,
     onNewUserLocation: null,
-    contextMenu: null
+    contextMenu: null,
+    showSearchResults: false
   },
   watch: {
     currentSelection: function(newselection, oldselection) {
+      this.showSearchResults = false;
       console.log("changed selection");
       if (!newselection) {
         console.log("nothing selected");
