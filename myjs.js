@@ -28,6 +28,7 @@ var app = new Vue({
       }
       if (newselection.advancedHours) {
         console.log("already found them!");
+        setTimeout(initializeAccordidowns, 200);
         return newselection.advancedHours;
       } else {
         newselection.advancedHours = "loading...";
@@ -831,15 +832,21 @@ function initializeAccordidowns() {
 
   for (i = 0; i < acc.length; i++) {
     // console.log("adding accordion to:", acc[i]);
-    acc[i].addEventListener("click", function() {
-      this.classList.toggle("active-acc-down");
-      var panel = this.nextElementSibling;
-      if (panel.style.maxHeight) {
-        panel.style.maxHeight = null;
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + "px";
-      }
-    });
+    try {
+      acc[i].removeEventListener("click", downAccClick);
+    } catch (e) {
+      console.log("error, who cares");
+    }
+    acc[i].addEventListener("click", downAccClick);
+  }
+}
+function downAccClick() {
+  this.classList.toggle("active-acc-down");
+  var panel = this.nextElementSibling;
+  if (panel.style.maxHeight) {
+    panel.style.maxHeight = null;
+  } else {
+    panel.style.maxHeight = panel.scrollHeight + "px";
   }
 }
 let icons = {
