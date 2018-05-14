@@ -47,56 +47,53 @@
                 </div>
 
                 <div id="gestureZone" class="tabs" style="height:80%;">
-                    <div id="Locations" style="height:100%; overflow-y:scroll;" class="info tab-contents">
-                        <div class="dataTable">
-                            <table id="myTable" class="table-header">
-                                <col width="38%">
-                                <thead class="w3-text-gray">
-                                    <tr>
-                                        <th v-bind:class="isNameHeader" id="name-header" class="name-col theader w3-fbutton" onclick="onSort(this)">Name</th>
-                                        <th id="cash-header" class="theader">Payment Forms Accepted</th>
-                                        <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
-                                        <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
-                                        class="name-col table-row">
-                                        <td>
-                                            <div class="name">{{place[cc.name]}}</div>
-                                            <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
-                                            <span class="disclaimer" v-if="place.Disclaimer">{{place.Disclaimer}}</span>
+                    <div id="Locations" style="height:100%; width:100%; overflow-y:scroll;" class="info tab-contents">
+                        <table id="myTable" class="table-header" style="width:100%">
+                            <col width="38%">
+                            <thead class="w3-text-gray">
+                                <tr>
+                                    <th v-bind:class="isNameHeader" id="name-header" class="name-col theader w3-fbutton" onclick="onSort(this)">Name</th>
+                                    <th id="cash-header" class="theader">Payment Forms Accepted</th>
+                                    <th v-bind:class="isStatusHeader" id="status-header" class="theader w3-bfutton" onclick="onSort(this)">Status</th>
+                                    <th v-bind:class="isDistanceHeader" id="distance-header" onclick="onSort(this)" class="w3-buftton">Distance (mi)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="place in places" v-if="place.display" v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)"
+                                    class="name-col table-row">
+                                    <td>
+                                        <div class="name">{{place[cc.name]}}</div>
+                                        <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+                                        <span class="disclaimer" v-if="place.Disclaimer">{{place.Disclaimer}}</span>
 
-                                        </td>
-                                        <td>
-                                            <span class="flex-rowm">
-                                                <span v-if="place.dd" class="tooltip">
-                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
-                                                    <span class="tooltiptext">Dining Dollars</span>
-                                                </span>
-                                                <span v-if="place.ms" class="tooltip">
-                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
-                                                    <span class="tooltiptext">Meal Swipe</span>
-                                                </span>
-                                                <span v-if="place.cash" class="tooltip">
-                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
-                                                    <span class="tooltiptext">Cash</span>
-                                                </span>
-                                                <span v-if="place.bb" class="tooltip">
-                                                    <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
-                                                    <span class="tooltiptext">Beak 'em Bucks</span>
-                                                </span>
+                                    </td>
+                                    <td>
+                                        <span class="flex-rowm">
+                                            <span v-if="place.dd" class="tooltip">
+                                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
+                                                <span class="tooltiptext">Dining Dollars</span>
                                             </span>
-                                        </td>
-                                        <td v-if="place.isOpen">open</td>
-                                        <td v-else class="w3-text-red">closed</td>
-                                        <td v-if="place.distance">{{round(place.distance,2)}}</td>
-                                        <td v-else>--</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
+                                            <span v-if="place.ms" class="tooltip">
+                                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
+                                                <span class="tooltiptext">Meal Swipe</span>
+                                            </span>
+                                            <span v-if="place.cash" class="tooltip">
+                                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
+                                                <span class="tooltiptext">Cash</span>
+                                            </span>
+                                            <span v-if="place.bb" class="tooltip">
+                                                <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
+                                                <span class="tooltiptext">Beak 'em Bucks</span>
+                                            </span>
+                                        </span>
+                                    </td>
+                                    <td v-if="place.isOpen">open</td>
+                                    <td v-else class="w3-text-red">closed</td>
+                                    <td v-if="place.distance">{{round(place.distance,2)}}</td>
+                                    <td v-else>--</td>
+                                </tr>
+                            </tbody>
+                        </table>
 
 
                         <div class="grid2" v-if="false">
@@ -199,7 +196,23 @@
                         </div>
                     </div>
                     <div v-if="currentSelection && !closed" id="Hours" class="w3-container tab-contents" style="display:none">
-                        advanced hours information will be here.
+                        <div v-if="currentSelection.currentHours">
+                            <template v-for="item in currentSelection.advancedHours.eras">
+                                <div class="accordion-down w3-btn w3-black">
+                                    {{computeIntervalTitle(item)}}
+                                    <!-- {{item.name}} ({{item.from.date.split(" ")[1]}}/{{item.from.date.split(" ")[2]}}-{{item.to.date.split(" ")[0]}}) -->
+                                </div>
+                                <div class="panel w3-panel">
+                                    <div v-for="inn in item.intervals" class="w3-border-red">
+                                        <span style="font-weight: bold">
+                                            <span>{{inn.fromDay}}</span>
+                                            <span v-if="inn.toDay">- {{inn.toDay}}</span>
+                                        </span>: {{inn.openingTime}} - {{inn.closingTime}}
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- {{currentSelection.advancedHours}} -->
+                        </div>
                     </div>
                     <div v-if="currentSelection && !closed" id="About" class="w3-container tab-contents" style="display:none">
                         {{currentSelection[cc.description]}}
@@ -259,6 +272,7 @@
     <script src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="./mapfix.js"></script>
+    <script src="./axios.min.js"></script>
     <script src="./myjs.js"></script>
     <script type="text/javascript" src="./fooddata.js"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFm8O1EPtBLiLtKN6Uz_DNEqPkPR_Dn8U&callback=initMap"></script>

@@ -86,7 +86,16 @@ body,
 .accordion:hover {
   background-color: #ccc;
 }
-
+.accordion-down:after {
+  content: "\002B";
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+.active-acc-down:after {
+  content: "\2212";
+}
 .selected-name {
   font-weight: bold;
   font-size: 1.3em;

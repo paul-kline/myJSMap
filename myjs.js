@@ -1,3 +1,5 @@
+let hoursEndpoint = "https://kjhk.pauliankline.com/paul/myapi/hours.php";
+
 var app = new Vue({
   el: "#app",
   data: {
@@ -12,6 +14,38 @@ var app = new Vue({
     userMarker: null,
     onNewUserLocation: null,
     contextMenu: null
+  },
+  watch: {
+    currentSelection: function(newselection, oldselection) {
+      console.log("changed selection");
+      if (!newselection) {
+        console.log("nothing selected");
+        return "Nothing Selected";
+      }
+      if (!newselection.currentHours) {
+        console.log("cannot compute. currentHours is not known.");
+        return "unknown";
+      }
+      if (newselection.advancedHours) {
+        console.log("already found them!");
+        return newselection.advancedHours;
+      } else {
+        newselection.advancedHours = "loading...";
+        axios
+          .get(
+            hoursEndpoint +
+              `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`
+          )
+          .then(r => {
+            newselection.advancedHours = r.data;
+            app.$forceUpdate();
+            console.log("hours", r.data);
+            setTimeout(initializeAccordidowns, 200);
+            return r.data;
+          });
+        return newselection.advancedHours;
+      }
+    }
   },
   computed: {
     today: function() {
@@ -100,6 +134,56 @@ function getSorter() {
 function doSort() {
   placesSort(getSorter());
 }
+function calcIsOpen2(place, date) {
+  // console.log("here");
+  let arr = place.currentHours.era.intervals;
+  for (let i = 0; i < arr.length; i++) {
+    const el = arr[i];
+    let f = new Date(el.from);
+    let t = new Date(el.to);
+    f = strip(f);
+    t = strip(t);
+    // console.log(f, date, t);
+    if (f <= date && date <= t) {
+      // console.log("I think these are in order");
+      // console.log(f, date, t);
+      // console.log("I found it!!!", el);
+      let ot = el.openingTime;
+      let ct = el.closingTime;
+      if (
+        ot.toLowerCase().includes("close") ||
+        ct.toLowerCase().includes("close")
+      ) {
+        place.isOpen = false;
+        return;
+      }
+      if (
+        ot.toLowerCase().includes("varies") ||
+        ct.toLowerCase().includes("varies")
+      ) {
+        place.isOpen = null; //we just don't know..
+        return;
+      }
+      [oh, om] = tohrmin(el.openingTime);
+      [ch, cm] = tohrmin(el.closingTime);
+      let o = oh * 60 + om;
+      let c = ch * 60 + cm;
+      let dh = date.getHours();
+      let dm = date.getMinutes();
+      let d = dh * 60 + dm;
+      console.log(place[cc.name], oh, om, ch, cm, dh, dm);
+      console.log("I think this place is:", d >= o && d < c);
+      place.isOpen = d >= o && d < c;
+    }
+  }
+}
+function strip(date) {
+  date.setHours(0);
+  date.setMinutes(0);
+  date.setMilliseconds(0);
+  date.setSeconds(0);
+  return date;
+}
 function calcIsOpens(date = new Date(), places = app.places) {
   let todayIndex = date.getDay();
   //TODO: check if special hours apply to date.
@@ -107,10 +191,15 @@ function calcIsOpens(date = new Date(), places = app.places) {
   // console.log("instance ", places instanceof Array);
   places.forEach(place => {
     // console.log("in each place");
+    if (place.currentHours) {
+      return calcIsOpen2(place, date);
+    }
     let openarr = place.opens.split(",");
     let closearr = place.closes.split(",");
     let openstr = openarr[todayIndex];
     let closestr = closearr[todayIndex];
+
+    place.isOpen = true; //say varies is open.
     if (
       openstr.toLowerCase() == "closed" ||
       closestr.toLowerCase() == "closed"
@@ -316,10 +405,10 @@ function affixToTop(map) {
   console.log("all set", el);
 }
 function maploaded(map) {
-  fooddata.forEach(e => {
-    e.directionsUrl = buildDirectionsLink(e);
-    e.display = true;
-  }); // can I move this earlier?
+  // fooddata.forEach(e => {
+  //   e.directionsUrl = buildDirectionsLink(e);
+  //   e.display = true;
+  // }); // can I move this earlier?
 
   console.log("map loaded!");
   app.bounds = new google.maps.LatLngBounds();
@@ -329,18 +418,79 @@ function maploaded(map) {
     markersWontHide: true,
     basicFormatEvents: true
   });
-  loadIntoMap(map, fooddata);
+  loadIntoMap(map, fooddata)
+    .then(calcIsOpens)
+    .then(() => {
+      locateUser(map);
+    });
 
-  calcIsOpens();
+  // console.log("caling calcIsOpens");
+  // calcIsOpens();
   //must be after map populated.
   //   initializeAccordions();
-  locateUser(map);
 }
 function computeAllLocationsTo(latlng) {
   let lat = latlng.lat;
   let lng = latlng.lng;
 }
-function loadIntoMap(map, results) {
+let currentHoursPromise = axios.get(hoursEndpoint + "?now").then(r => {
+  let d = r.data;
+  // console.log("efijefije");
+  fooddata.forEach(e => {
+    e.directionsUrl = buildDirectionsLink(e);
+    e.display = true;
+    d.forEach((er, i) => {
+      // console.log("eifjeifjefj", e[cc.name], er.name);
+      if (er.name == e[cc.hname]) {
+        console.log("found", e[cc.hname], er.name);
+        console.log(er);
+        e.currentHours = er;
+        //intervals should already be in order.
+        for (let g = 0; g < er.era.intervals.length; g++) {
+          let ec = er.era.intervals[g];
+          let strH = "";
+          let op = ec.openingTime.trim();
+          let opL = op.toLowerCase();
+          if (opL.includes("close") || opL.includes("varies")) {
+            strH = op;
+          } else {
+            strH = opL.replace(/ /g, "");
+          }
+
+          let cp = ec.closingTime.trim();
+          let cpL = cp.toLowerCase();
+          if (cpL.includes("close") || cpL.includes("varies")) {
+            // strH += cp; //leave it be.
+          } else {
+            strH += "-" + cpL.replace(/ /g, "");
+          }
+
+          e["hours" + (g + 1)] =
+            ec.fromDay + (ec.toDay ? "-" + ec.toDay : "") + ":" + strH;
+        }
+      }
+      // e.hours1 = er
+    });
+  });
+  return d;
+});
+
+let today = new Date();
+today.setHours(0);
+today.setSeconds(0);
+today.setMinutes(0);
+today.setMilliseconds(0);
+
+async function loadIntoMap(map, results) {
+  //need to wait to get current hours.
+  let hours;
+  try {
+    hours = await currentHoursPromise;
+    console.log("okay, here are the hours", hours);
+  } catch (e) {
+    console.log(e);
+  }
+
   for (let i = 0; i < results.length; i++) {
     let cur = results[i];
     let latLng = new google.maps.LatLng(cur.lat, cur.lng);
@@ -653,6 +803,37 @@ function initializeAccordions() {
     acc[i].addEventListener("click", function() {
       this.classList.toggle("active-acc");
       var panel = this.previousElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      }
+    });
+  }
+  // initializeAccordidowns();
+}
+
+function computeIntervalTitle(interval) {
+  let options = { month: "short", day: "numeric" };
+  let fromd = interval.from.date; //.split(" ")[0];
+  let tod = interval.to.date; //.split(" ")[0];
+  let fromdd = new Date(fromd);
+  let todd = new Date(tod);
+  return `${interval.name} (${fromdd.toLocaleDateString(
+    "en-US",
+    options
+  )} - ${todd.toLocaleDateString("en-US", options)}) `;
+}
+function initializeAccordidowns() {
+  console.log("initing downs");
+  var acc = document.getElementsByClassName("accordion-down");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    // console.log("adding accordion to:", acc[i]);
+    acc[i].addEventListener("click", function() {
+      this.classList.toggle("active-acc-down");
+      var panel = this.nextElementSibling;
       if (panel.style.maxHeight) {
         panel.style.maxHeight = null;
       } else {
