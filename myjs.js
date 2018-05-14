@@ -423,6 +423,11 @@ function maploaded(map) {
     .then(calcIsOpens)
     .then(() => {
       locateUser(map);
+    })
+    .catch(e => {
+      console.log("something went wrong in promise");
+      console.log(e);
+      alert(JSON.stringify(e));
     });
 
   // console.log("caling calcIsOpens");
@@ -820,11 +825,10 @@ function computeIntervalTitle(interval) {
   let tod = interval.to.date; //.split(" ")[0];
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
-  return `${interval.name} 
-  (${fromdd.toLocaleDateString("en-US", options)} - ${todd.toLocaleDateString(
+  return `${interval.name}(${fromdd.toLocaleDateString(
     "en-US",
     options
-  )}) `;
+  )}-${todd.toLocaleDateString("en-US", options)})`;
 }
 function initializeAccordidowns() {
   console.log("initing downs");
