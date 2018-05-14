@@ -769,7 +769,7 @@ function locateUser(map) {
 }
 function createUserMarker(map, pos) {
   let markerImage = new google.maps.MarkerImage(
-    "./images/curloc.svg",
+    "https://paul-kline.github.io/myJSMap/images/curloc.svg",
     new google.maps.Size(48, 48),
     new google.maps.Point(0, 0),
     new google.maps.Point(24, 24)
