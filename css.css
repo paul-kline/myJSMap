@@ -147,6 +147,14 @@ body,
   justify-content: space-between;
   justify-items: flex-start;
 }
+.flex-row-b {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+  align-items: center;
+  justify-content: flex-start;
+  justify-items: flex-start;
+}
 .flex-row-left {
   display: flex;
   white-space: nowrap;
@@ -176,6 +184,12 @@ body,
 .flex {
   display: flex;
   flex-flow: column wrap;
+}
+.flex-column {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  justify-items: flex-start;
 }
 .column-header {
   font-weight: bold;
@@ -279,6 +293,9 @@ i {
 }
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+.tablink {
+  cursor: pointer;
 }
 #myTable > table {
   border-collapse: collapse;

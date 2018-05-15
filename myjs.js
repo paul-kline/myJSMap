@@ -839,10 +839,11 @@ function computeIntervalTitle(interval) {
   let tod = interval.to.date; //.split(" ")[0];
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
-  return `${interval.name}(${fromdd.toLocaleDateString(
+  return `
+  (${fromdd.toLocaleDateString("en-US", options)}-${todd.toLocaleDateString(
     "en-US",
     options
-  )}-${todd.toLocaleDateString("en-US", options)})`;
+  )})`;
 }
 function initializeAccordidowns() {
   console.log("initing downs");

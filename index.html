@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="./css.css">
@@ -22,25 +23,29 @@
         <div class="bottom">
             <div class="current" style="height:100%">
 
-                <div class="w3-center">
+                <div v-if="currentSelection" class="w3-center">
                     <span v-if="currentSelection && !closed" class="selected-name">{{currentSelection[cc.name]}}</span>
                     <span class="building" v-if="currentSelection && currentSelection.Building">{{currentSelection[cc.bldg]}}</span>
                     <span class="disclaimer" v-if="currentSelection && currentSelection.Disclaimer">{{currentSelection.Disclaimer}}</span>
                     <div class="divider"></div>
                 </div>
+                <div v-else class="w3-card w3-panel w3-large" style="font-weight: bold;">Select a location from the map or the list to view its hours, menu, and more!</div>
                 <div class="flex-row-beginning tab-row">
                     <div class="flex-item2 tablink w3-bottombar w3-hover-light-grey w3-border-red" onclick="openTab(event, 'Locations');">
                         Locations
                         <span style="font-weight: normal">({{filterSize}})</span>
                     </div>
 
-                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey " onclick="openTab(event, 'Menu');">
+                    <div v-if="currentSelection && !closed" class="flex-item w3-card tablink w3-round w3-border w3-bottombar w3-hover-light-grey "
+                        onclick="openTab(event, 'Menu');">
                         Menu
                     </div>
-                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey" onclick="openTab(event, 'Hours');">
+                    <div v-if="currentSelection && !closed" class="flex-item w3-card tablink w3-round w3-border w3-bottombar w3-hover-light-grey"
+                        onclick="openTab(event, 'Hours');">
                         Hours
                     </div>
-                    <div v-if="currentSelection && !closed" class="flex-item tablink w3-bottombar w3-hover-light-grey" onclick="openTab(event, 'About');">
+                    <div v-if="currentSelection && !closed" class="flex-item w3-card tablink w3-round w3-border w3-bottombar w3-hover-light-grey"
+                        onclick="openTab(event, 'About');">
                         About
                     </div>
 
@@ -197,26 +202,37 @@
                     </div>
                     <div v-if="currentSelection && !closed" id="Hours" class="w3-container tab-contents" style="display:none">
                         <div v-if="currentSelection.currentHours">
-                            <template v-for="item in currentSelection.advancedHours.eras">
-                                <div class="accordion-down w3-btn w3-black">
-                                    {{computeIntervalTitle(item)}}
-                                    <!-- {{item.name}} ({{item.from.date.split(" ")[1]}}/{{item.from.date.split(" ")[2]}}-{{item.to.date.split(" ")[0]}}) -->
-                                </div>
-                                <div class="panel w3-panel">
-                                    <div v-for="inn in item.intervals" class="w3-border-red">
-                                        <span style="font-weight: bold">
-                                            <span>{{inn.fromDay}}</span>
-                                            <span v-if="inn.toDay">- {{inn.toDay}}</span>
-                                        </span>: {{inn.openingTime}} - {{inn.closingTime}}
+                            <div class="flex-column">
+
+                                <template v-for="item in currentSelection.advancedHours.eras">
+                                    <div style="height:3em; " class="accordion-down flex-row-b w3-margin w3-round w3-card-2 w3-bdtnw  w3-left-align w3-black">
+                                        <span class="flex-row-b" style="width:90%">
+                                            <div>{{item.name}}</div>
+                                            <div>{{computeIntervalTitle(item)}}</div>
+                                        </span>
+                                        <!-- {{item.name}} ({{item.from.date.split(" ")[1]}}/{{item.from.date.split(" ")[2]}}-{{item.to.date.split(" ")[0]}}) -->
                                     </div>
-                                </div>
-                            </template>
+                                    <div class="panel w3-panel">
+                                        <div v-for="inn in item.intervals" class="w3-border-red">
+                                            <span style="font-weight: bold">
+                                                <span>{{inn.fromDay}}</span>
+                                                <span v-if="inn.toDay">- {{inn.toDay}}</span>
+                                            </span>: {{inn.openingTime}} - {{inn.closingTime}}
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                             <!-- {{currentSelection.advancedHours}} -->
                         </div>
                         <!-- <div v-else>No Hours information for this location.</div> -->
                     </div>
                     <div v-if="currentSelection && !closed" id="About" class="w3-container tab-contents" style="display:none">
-                        {{currentSelection[cc.description]}}
+                        <div class="w3-margin w3-panel w3-leftbar">
+
+                            {{currentSelection[cc.description]}}
+
+                        </div>
+
                     </div>
                 </div>
 
