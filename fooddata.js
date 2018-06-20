@@ -242,7 +242,7 @@ let fooddata = [
     Disclaimer: "",
     Street: "1301 Jayhawk Blvd.",
     City: "Lawrence, KS 66045",
-    Phone: "785-864-2886",
+    Phone: "785-864-2412",
     "is Residential": false,
     dd: true,
     ms: false,
@@ -917,10 +917,10 @@ let fooddata = [
     "": ""
   },
   {
-    Name: "Roasterie",
-    label: "H",
+    Name: "Burge Jay Break",
+    label: "J",
     Description:
-      "Headquartered in Kansas City, The Roasterie is one of the most renowned speciality coffee roasters in the nation. Stop by one of their many campus locations today!",
+      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
     Building: "Burge Union",
     Disclaimer: "",
     Street: "1565 Irving Hill Rd.",
