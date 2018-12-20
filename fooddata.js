@@ -26,504 +26,60 @@ let cc = {
 };
 
 let center = { center: { lat: 38.9559656238095, lng: -95.2513079666667 } };
-let updateFoodPromise = fetch("https://union.pauliankline.com/queryhours.php?alldining=true&date=" + toQueryDate(new Date()))
+let placesPromise = fetch("https://union.pauliankline.com/places.php?alldining=true")
   .then(function(response) {
     return response.json();
   })
-  .then(obj => {
-    console.log("got fetch", obj);
-    fooddata = obj.places;
-    currentHours = obj.hours;
+  .then(places => {
+    console.log("got places", places);
+    fooddata = places;
   });
-let currentHours;
-let fooddata = [
-  {
-    place_id: "1",
-    name: "Anschutz Jay Break",
-    lbl: "J",
-    description:
-      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Anschutz",
-    within_building: null,
-    street: "1301 Hoch Auditoria Dr.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9573285",
-    lng: "-95.2496611",
-    phone: "785-864-2948",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "7",
-    name: "Burge Roasterie",
-    lbl: "R",
-    description: null,
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Burge",
-    within_building: null,
-    street: "1565 Irving Hill Rd",
-    city: "Lawrence, KS 66045",
-    lat: "38.9551647",
-    lng: "-95.254746",
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Roasterie"
-  },
-  {
-    place_id: "11",
-    name: "Courtside Caf\u00e9",
-    lbl: "C",
-    description: "Located in the newly constructed DeBruce Center, the Courtside Caf\u00e9 is one of the many retail dining centers throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "DeBruce Center",
-    within_building: null,
-    street: "1647 Naismith Drive",
-    city: "Lawrence, KS 66045",
-    lat: "38.955172",
-    lng: "-95.252289",
-    phone: "785-864-5694",
-    disclaimer: null,
-    searchable: "DEBR COURTSIDE CAFE",
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "13",
-    name: "DeBruce Roasterie",
-    lbl: "R",
-    description: null,
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "DeBruce Center",
-    within_building: null,
-    street: "1647 Naismith Drive",
-    city: "Lawrence, KS 66045",
-    lat: "38.95328",
-    lng: "-95.251263",
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Roasterie"
-  },
-  {
-    place_id: "14",
-    name: "Engineering Commons Jay Break",
-    lbl: "J",
-    description:
-      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "LEEP2",
-    within_building: null,
-    street: "1536 W. 15th St.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9574172",
-    lng: "-95.2540253",
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "16",
-    name: "Impromptu Caf\u00e9",
-    lbl: "I",
-    description:
-      "Located in the Kansas Union, the Impromptu Caf\u00e9 offers more of a restaurant-style feel than many of our other locations. It is one of the many residential dining locations throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Kansas Union",
-    within_building: "Level 3",
-    street: "1301 Jayhawk Blvd",
-    city: "Lawrence, KS 66045",
-    lat: "38.9595782",
-    lng: "-95.2434651",
-    phone: "785-864-8001",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "18",
-    name: "JRP Jay Break",
-    lbl: "J",
-    description:
-      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "JRP",
-    within_building: null,
-    street: "1122 West Campus Rd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9624281",
-    lng: "-95.2505894",
-    phone: "785-864-1076",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "29",
-    name: "Mrs. E's",
-    lbl: "E",
-    description: "A staple of KU, Mrs. E's is attached to Lewis Hall on Daisy Hill. It is one of our many residential dining locations throughout campus.",
-    category: "KU Dining",
-    subcategory: "Residential Locations",
-    building: "Lewis",
-    within_building: null,
-    street: "1532 Engel Rd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.954986",
-    lng: "-95.25803",
-    phone: "785-864-2260",
-    disclaimer: null,
-    searchable: "EKDAHL DINING",
-    is_residential: "1",
-    dd: "1",
-    ms: "1",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "30",
-    name: "North College Caf\u00e9",
-    lbl: "N",
-    description: "Located in the recently renovated GSP Hall, North College Caf\u00e9 is one of the many residential dining locations located throughout campus.",
-    category: "KU Dining",
-    subcategory: "Residential Locations",
-    building: "GSP",
-    within_building: null,
-    street: "500 W 11th St.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9651381",
-    lng: "-95.2417997",
-    phone: "785-864-3120",
-    disclaimer: null,
-    searchable: "NORTH COLLEGE CAFE",
-    is_residential: "1",
-    dd: "1",
-    ms: "1",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "31",
-    name: "Pharmacy Roasterie",
-    lbl: "R",
-    description: null,
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Pharmacy",
-    within_building: null,
-    street: "2010 Becker Dr",
-    city: "Lawrence, KS 66045",
-    lat: "38.9484624",
-    lng: "-95.2644467",
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "34",
-    name: "South Dining Commons",
-    lbl: "S",
-    description: "Shared by Oliver and Downs Halls, South Dining Commons is a brand-new dining center located on campus. It is one of the many residential dining locations on campus.",
-    category: "KU Dining",
-    subcategory: "Residential Locations",
-    building: "Oliver/Downs",
-    within_building: null,
-    street: "1517 West 18th Street",
-    city: "Lawrence, KS 66045",
-    lat: "38.950577",
-    lng: "-95.252491",
-    phone: "785-864-4087",
-    disclaimer: null,
-    searchable: "SOUTH DINING COMMONS",
-    is_residential: "1",
-    dd: "1",
-    ms: "1",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "35",
-    name: "Southside",
-    lbl: "S",
-    description: "Located in Oliver Hall, Southside is one of the many retail dining locations throughout campus.",
-    category: "KU Dining",
-    subcategory: "Residential Locations",
-    building: "Oliver/Downs",
-    within_building: null,
-    street: "1815 Naismith Dr.",
-    city: "Lawrence, KS 66045",
-    lat: "38.950577",
-    lng: "-95.252491",
-    phone: "785-864-4087",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "36",
-    name: "Strong Hall Jay Break",
-    lbl: "J",
-    description:
-      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Strong Hall",
-    within_building: null,
-    street: "1450 Jayhawk Blvd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.958542",
-    lng: "-95.2476138",
-    phone: "785-864-8017",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "38",
-    name: "The Bus Stop",
-    lbl: "B",
-    description: "Located in the newly constructed Self Hall, the Bus Stop is one of the many retail dining centers throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Self",
-    within_building: null,
-    street: "1620 Engel Rd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.955373",
-    lng: "-95.259124",
-    phone: "785-864-2991",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "39",
-    name: "The Market",
-    lbl: "M",
-    description: "Located in the Kansas Union, The Market is one of the many retail dining locations throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Kansas Union",
-    within_building: "Level 3",
-    street: "1301 Jayhawk Blvd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9595782",
-    lng: "-95.2434651",
-    phone: "785-864-2412",
-    disclaimer: null,
-    searchable: "UN MARKET",
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "40",
-    name: "The Studio Grill",
-    lbl: "G",
-    description: "Located in Hashinger Hall, the Studio Grill is one of the many retail dining locations throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Hashinger",
-    within_building: null,
-    street: "1632 Engel Rd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9540539",
-    lng: "-95.2588591",
-    phone: "785-864-1890",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "41",
-    name: "The Underground",
-    lbl: "U",
-    description: "A dining staple, The Underground is located in Wescoe Hall. It is one of our many retail dining centers throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Wescoe",
-    within_building: null,
-    street: "1445 Jayhawk Blvd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9574035",
-    lng: "-95.2477536",
-    phone: "785-864-5022",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
-  },
-  {
-    place_id: "44",
-    name: "Union Roasterie",
-    lbl: "R",
-    description: null,
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Kansas Union",
-    within_building: "Level 4",
-    street: "1301 Jayhawk Blvd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9595782",
-    lng: "-95.2434651",
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Roasterie"
-  },
-  {
-    place_id: "45",
-    name: "Watson Jay Break",
-    lbl: "J",
-    description:
-      "Craving convenient, delicious food but don't have a lot of time? Jay Break has you covered. We bring the food to you! Jay Break offer freshly made sandwiches, salads, breakfast items, snacks and chips. Just grab it and go!",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Watson",
-    within_building: null,
-    street: "1425 Jayhawk Blvd.",
-    city: "Lawrence, KS 66045",
-    lat: "38.9565813",
-    lng: "-95.24484",
-    phone: "785-864-1937",
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Jay Break"
-  },
-  {
-    place_id: "47",
-    name: "Wescoe Roasterie",
-    lbl: "R",
-    description: null,
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Wescoe",
-    within_building: null,
-    street: null,
-    city: null,
-    lat: null,
-    lng: null,
-    phone: null,
-    disclaimer: null,
-    searchable: null,
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: "Roasterie"
-  },
-  {
-    place_id: "28",
-    name: "Mortar & Pestle Caf\u00e9",
-    lbl: "M",
-    description: "Located in the Pharmacy Building on West Campus, Mortar & Pestle Caf\u00e9 is one of the many retail dining centers throughout campus.",
-    category: "KU Dining",
-    subcategory: "Retail Locations",
-    building: "Pharmacy",
-    within_building: null,
-    street: "2010 Becker Dr",
-    city: "Lawrence, KS 66045",
-    lat: "38.9484624",
-    lng: "-95.2644467",
-    phone: "785-864-7086",
-    disclaimer: null,
-    searchable: "PHAR MORTAR &amp; PESTLE",
-    is_residential: "0",
-    dd: "1",
-    ms: "0",
-    cash: "1",
-    bb: "1",
-    chain: ""
+let hoursPromise = fetch("https://union.pauliankline.com/queryhours.php?alldining=true&date=" + toQueryDate(new Date()))
+  .then(function(response) {
+    // console.log("hours promise response:", response);
+    return response.json();
+  })
+  .then(hours => {
+    console.log("got hours", hours);
+    currentHours = hours;
+    assignHours(fooddata, currentHours);
+  });
+async function assignHours(places, hours) {
+  await placesPromise; //wait for places to have loaded.
+  console.log("assigning!!!!!!!!!!!!!!!!!!!!!!!!!");
+  places.forEach(p => {
+    let hh = hours
+      .filter(h => h.place_id == p.place_id)
+      .map(h => {
+        h.from_dow = parseInt(h.from_dow);
+        h.to_dow = parseInt(h.to_dow);
+        return h;
+      });
+    let intervals = createIntervalsForPlace(hh);
+    p.intervals = intervals;
+  });
+  console.log("assigned", places);
+}
+function createIntervalsForPlace(placeHours) {
+  let groupedByIntervalNames = groupBy(placeHours, "interval_name");
+  // console.log(groupedByIntervalNames);
+  let intervals = [];
+  for (let intervalName in groupedByIntervalNames) {
+    let ints = groupedByIntervalNames[intervalName];
+    let fst = ints[0];
+    let interval = { interval_name: intervalName, interval_start: new Date(fst.interval_start + "cst"), interval_end: new Date(fst.interval_end + "cst") };
+    interval.entries = ints.map(i => {
+      return { first_effective_date: new Date(i.first_effective_date + "cst"), closed: i.closed, varies: i.varies, open: i.open, close: i.close, from_dow: i.from_dow, to_dow: i.to_dow };
+    });
+    intervals.push(interval);
   }
-];
+  return intervals;
+}
+function groupBy(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+}
+let currentHours;
+let fooddata;

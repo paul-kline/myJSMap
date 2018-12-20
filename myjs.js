@@ -108,15 +108,18 @@ function getSorter() {
 function doSort() {
   placesSort(getSorter());
 }
+
 function calcIsOpen2(place, date) {
   // console.log("here");
-  let arr = place.currentHours.era.intervals;
+  let arr = place.intervals;
   for (let i = 0; i < arr.length; i++) {
     const el = arr[i];
-    let f = new Date(el.from);
-    let t = new Date(el.to);
-    f = strip(f);
-    t = strip(t);
+    // let f = new Date(el.from);
+    // let t = new Date(el.to);
+    // f = strip(f);
+    // t = strip(t);
+    let f = el.interval_start;
+    let t = el.interval_end;
     // console.log(f, date, t);
     if (f <= date && date <= t) {
       // console.log("I think these are in order");
@@ -159,9 +162,13 @@ function calcIsOpens(date = new Date(), places = app.places) {
   // console.log("instance ", places instanceof Array);
   places.forEach(place => {
     // console.log("in each place");
-    if (place.currentHours) {
+    console.log("place is", place);
+    if (place.intervals) {
+      console.log("I think place.intervals is TRUE", place);
+
       return calcIsOpen2(place, date);
     }
+    console.log("I think place.intervals is false", place);
     let openarr = place.opens.split(",");
     let closearr = place.closes.split(",");
     let openstr = openarr[todayIndex];
@@ -369,7 +376,7 @@ async function maploaded(map) {
     markersWontHide: true,
     basicFormatEvents: true
   });
-  await updateFoodPromise;
+  await placesPromise;
   loadIntoMap(map, fooddata)
     .then(calcIsOpens)
     .then(() => {
@@ -378,7 +385,7 @@ async function maploaded(map) {
     .catch(e => {
       console.log("something went wrong in promise");
       console.log(e);
-      alert(JSON.stringify(e));
+      // alert(JSON.stringify(e));
     });
 
   // console.log("caling calcIsOpens");
@@ -441,9 +448,12 @@ async function loadIntoMap(map, results) {
   //need to wait to get current hours.
   let hours;
   try {
-    hours = await currentHoursPromise;
+    await placesPromise; //currentHoursPromise;
+    await hoursPromise;
+    hours = currentHours;
     console.log("okay, here are the hours", hours);
   } catch (e) {
+    console.log("oh nooooo!!!!!!!!");
     console.log(e);
   }
 
