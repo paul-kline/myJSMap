@@ -34,18 +34,13 @@ var app = new Vue({
         return newselection.advancedHours;
       } else {
         newselection.advancedHours = "loading...";
-        axios
-          .get(
-            hoursEndpoint +
-              `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`
-          )
-          .then(r => {
-            newselection.advancedHours = r.data;
-            app.$forceUpdate();
-            console.log("hours", r.data);
-            setTimeout(initializeAccordidowns, 200);
-            return r.data;
-          });
+        axios.get(hoursEndpoint + `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`).then(r => {
+          newselection.advancedHours = r.data;
+          app.$forceUpdate();
+          console.log("hours", r.data);
+          setTimeout(initializeAccordidowns, 200);
+          return r.data;
+        });
         return newselection.advancedHours;
       }
     }
@@ -60,44 +55,20 @@ var app = new Vue({
     },
     isNameHeader: function() {
       return {
-        "sort-desc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "name-header" &&
-          !this.sorter.asc,
-        "sort-asc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "name-header" &&
-          this.sorter.asc
+        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "name-header" && !this.sorter.asc,
+        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "name-header" && this.sorter.asc
       };
     },
     isDistanceHeader: function() {
       return {
-        "sort-desc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "distance-header" &&
-          !this.sorter.asc,
-        "sort-asc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "distance-header" &&
-          this.sorter.asc
+        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "distance-header" && !this.sorter.asc,
+        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "distance-header" && this.sorter.asc
       };
     },
     isStatusHeader: function() {
       return {
-        "sort-desc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "status-header" &&
-          !this.sorter.asc,
-        "sort-asc":
-          this.sorter &&
-          this.sorter.id &&
-          this.sorter.id == "status-header" &&
-          this.sorter.asc
+        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "status-header" && !this.sorter.asc,
+        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "status-header" && this.sorter.asc
       };
     },
     filterSize: function() {
@@ -153,17 +124,11 @@ function calcIsOpen2(place, date) {
       // console.log("I found it!!!", el);
       let ot = el.openingTime;
       let ct = el.closingTime;
-      if (
-        ot.toLowerCase().includes("close") ||
-        ct.toLowerCase().includes("close")
-      ) {
+      if (ot.toLowerCase().includes("close") || ct.toLowerCase().includes("close")) {
         place.isOpen = false;
         return;
       }
-      if (
-        ot.toLowerCase().includes("varies") ||
-        ct.toLowerCase().includes("varies")
-      ) {
+      if (ot.toLowerCase().includes("varies") || ct.toLowerCase().includes("varies")) {
         place.isOpen = null; //we just don't know..
         return;
       }
@@ -203,10 +168,7 @@ function calcIsOpens(date = new Date(), places = app.places) {
     let closestr = closearr[todayIndex];
 
     place.isOpen = true; //say varies is open.
-    if (
-      openstr.toLowerCase() == "closed" ||
-      closestr.toLowerCase() == "closed"
-    ) {
+    if (openstr.toLowerCase() == "closed" || closestr.toLowerCase() == "closed") {
       place.isOpen = false;
     } else {
       [oh, om] = tohrmin(openstr);
@@ -279,9 +241,7 @@ function initMap() {
   });
   //set up context menu:
   app.d = document.getElementById("content");
-  var contextMenu = google.maps.event.addListener(map, "rightclick", function(
-    event
-  ) {
+  var contextMenu = google.maps.event.addListener(map, "rightclick", function(event) {
     handleContextMenu(event, map);
   });
 
@@ -358,10 +318,7 @@ function definePopupClass() {
   Popup.prototype.draw = function() {
     var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
     // Hide the popup when it is far out of view.
-    var display =
-      Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
-        ? "block"
-        : "none";
+    var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ? "block" : "none";
 
     if (display === "block") {
       this.anchor.style.left = divPosition.x + "px";
@@ -377,28 +334,19 @@ function definePopupClass() {
     var anchor = this.anchor;
     anchor.style.cursor = "auto";
 
-    [
-      "click",
-      "dblclick",
-      "contextmenu",
-      "wheel",
-      "mousedown",
-      "touchstart",
-      "pointerdown"
-    ].forEach(function(event) {
+    ["click", "dblclick", "contextmenu", "wheel", "mousedown", "touchstart", "pointerdown"].forEach(function(event) {
       anchor.addEventListener(event, function(e) {
         e.stopPropagation();
       });
     });
   };
 }
+function toQueryDate(date) {
+  return date.getFullYear() + "-" + two(date.getMonth() + 1) + "-" + two(date.getDay());
+}
 function genmapControls() {
-  app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
-    document.getElementById("mapcontrols")
-  );
-  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
-    document.getElementById("recenter")
-  );
+  app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById("mapcontrols"));
+  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("recenter"));
 }
 function affixToTop(map) {
   let el = document.getElementById("map");
@@ -407,7 +355,7 @@ function affixToTop(map) {
   el.left = "0px";
   console.log("all set", el);
 }
-function maploaded(map) {
+async function maploaded(map) {
   // fooddata.forEach(e => {
   //   e.directionsUrl = buildDirectionsLink(e);
   //   e.display = true;
@@ -421,6 +369,7 @@ function maploaded(map) {
     markersWontHide: true,
     basicFormatEvents: true
   });
+  await updateFoodPromise;
   loadIntoMap(map, fooddata)
     .then(calcIsOpens)
     .then(() => {
@@ -473,8 +422,7 @@ let currentHoursPromise = axios.get(hoursEndpoint + "?now").then(r => {
             strH += "-" + cpL.replace(/ /g, "");
           }
 
-          e["hours" + (g + 1)] =
-            ec.fromDay + (ec.toDay ? "-" + ec.toDay : "") + ":" + strH;
+          e["hours" + (g + 1)] = ec.fromDay + (ec.toDay ? "-" + ec.toDay : "") + ":" + strH;
         }
       }
       // e.hours1 = er
@@ -507,10 +455,9 @@ async function loadIntoMap(map, results) {
     let marker = new google.maps.Marker({
       position: latLng,
       // map: map,
-      title:
-        cur.Name + (cur.Building.length > 0 ? " (" + cur.Building + ")" : ""),
+      title: cur.name + (cur.building.length > 0 ? " (" + cur.building + ")" : ""),
       zIndex: 3,
-      label: cur.label
+      label: cur.lbl
       //   ,
       //   icon: iconisize(icons.dd)
     });
@@ -547,19 +494,13 @@ function filterStateChange(places = app.places) {
 
   places.forEach(e => {
     let openReq = isOpenOnly ? e.isOpen : true;
-    let retailReq = isRetailOnly ? !e[cc.residential] : true;
-    let mustbbReq = mustbb ? e.bb : true;
-    let mustCashReq = mustCash ? e.cash : true;
-    let mustmsReq = mustms ? e.ms : true;
-    let mustddReq = mustdd ? e.dd : true;
+    let retailReq = isRetailOnly ? !(e[cc.residential] == "1") : true;
+    let mustbbReq = mustbb ? e.bb == "1" : true;
+    let mustCashReq = mustCash ? e.cash == "1" : true;
+    let mustmsReq = mustms ? e.ms == "1" : true;
+    let mustddReq = mustdd ? e.dd == "1" : true;
 
-    e.display =
-      openReq &&
-      retailReq &&
-      mustbbReq &&
-      mustCashReq &&
-      mustmsReq &&
-      mustddReq;
+    e.display = openReq && retailReq && mustbbReq && mustCashReq && mustmsReq && mustddReq;
 
     if (e.display) {
       if (!e.marker.map) {
@@ -601,7 +542,7 @@ function onTouched(place, fromMap = false) {
   //if the click was from the list I want to center the map horizontally now that the info window has been opened.
   if (!fromMap) {
     let lat = app.map.getCenter().lat();
-    let lng = app.currentSelection.lng;
+    let lng = parseFloat(app.currentSelection.lng);
     app.map.setCenter({ lat: lat, lng: lng });
   }
 }
@@ -623,14 +564,7 @@ function buildHoursList(obj) {
   }
 }
 function buildDirectionsLink(obj) {
-  let lnk = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    obj[cc.name] +
-      " " +
-      (obj[cc.bldg] ? obj[cc.bldg] + " " : "") +
-      obj[cc.street] +
-      " " +
-      obj[cc.city]
-  )}`;
+  let lnk = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(obj[cc.name] + " " + (obj[cc.bldg] ? obj[cc.bldg] + " " : "") + obj[cc.street] + " " + obj[cc.city])}`;
   return lnk;
 }
 function buildPopup(obj) {
@@ -642,37 +576,26 @@ function buildPopup(obj) {
   return `
    <div id="content" style="z-index:5">
      <div id="siteNotice"></div>
-     <div id="firstHeading" class="popup-title">${obj.Name}</div>
+     <div id="firstHeading" class="popup-title">${obj.name}</div>
      <div class="popup-bldg">${obj[cc.bldg]}</div>
     <div class="popup-street">${obj[cc.street]}</div>
     <div class="popup-city">${obj[cc.city]}</div>
       <div id="bodyContent">
       <div><a href="${obj.directionsUrl}" target="_blank">Directions</a></div>
       ${phone}
-         <strong>Hours</strong>${
-           obj.currentHours
-             ? ""
-             : '<div style="font-style:italic"> *may not be accurate</div>'
-         }
+         <strong>Hours</strong>${obj.currentHours ? "" : '<div style="font-style:italic"> *may not be accurate</div>'}
           ${hours}      
       </div>
     </div>
     `;
 }
 function iconisize(addr) {
-  return new google.maps.MarkerImage(
-    addr,
-    null,
-    null,
-    null,
-    new google.maps.Size(20, 20)
-  );
+  return new google.maps.MarkerImage(addr, null, null, null, new google.maps.Size(20, 20));
 }
 
 function setDistancesFrom(latlng) {
   app.places.forEach(el => {
-    el.distance =
-      calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
+    el.distance = calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
   });
 
   if (app.sorter && app.sorter.id == "distance-header") {
@@ -703,15 +626,9 @@ function _fcreator(asc, prop) {
   let numcmp = (x, y) => x - y;
 
   if (asc) {
-    return (x, y) =>
-      typeof x[prop] == "string"
-        ? strcmp(y[prop], x[prop])
-        : numcmp(y[prop], x[prop]);
+    return (x, y) => (typeof x[prop] == "string" ? strcmp(y[prop], x[prop]) : numcmp(y[prop], x[prop]));
   } else {
-    return (x, y) =>
-      typeof x[prop] == "string"
-        ? strcmp(x[prop], y[prop])
-        : numcmp(x[prop], y[prop]);
+    return (x, y) => (typeof x[prop] == "string" ? strcmp(x[prop], y[prop]) : numcmp(x[prop], y[prop]));
   }
 }
 
@@ -770,12 +687,7 @@ function locateUser(map) {
   }
 }
 function createUserMarker(map, pos) {
-  let markerImage = new google.maps.MarkerImage(
-    "https://paul-kline.github.io/myJSMap/images/curloc.svg",
-    new google.maps.Size(48, 48),
-    new google.maps.Point(0, 0),
-    new google.maps.Point(24, 24)
-  );
+  let markerImage = new google.maps.MarkerImage("https://paul-kline.github.io/myJSMap/images/curloc.svg", new google.maps.Size(48, 48), new google.maps.Point(0, 0), new google.maps.Point(24, 24));
   let marker = new google.maps.Marker({
     position: pos,
     map: map,
@@ -840,10 +752,7 @@ function computeIntervalTitle(interval) {
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
   return `
-  (${fromdd.toLocaleDateString("en-US", options)}-${todd.toLocaleDateString(
-    "en-US",
-    options
-  )})`;
+  (${fromdd.toLocaleDateString("en-US", options)}-${todd.toLocaleDateString("en-US", options)})`;
 }
 function initializeAccordidowns() {
   console.log("initing downs");
@@ -871,28 +780,20 @@ function downAccClick() {
 }
 let icons = {
   //dining dollars
-  dd:
-    "https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg",
+  dd: "https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg",
   //meal swipe
-  ms:
-    "https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg",
+  ms: "https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg",
   //cash
   cash: "https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg",
   //beak -em bucks
-  bb:
-    "https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg"
+  bb: "https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg"
 };
 
 function calcCrowDistKM(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2 - lat1); // deg2rad below
   var dLon = deg2rad(lon2 - lon1);
-  var a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c; // Distance in km
   return d;
@@ -945,11 +846,7 @@ function round(number, precision) {
       precision = -precision;
     }
     var numArray = ("" + number).split("e");
-    return +(
-      numArray[0] +
-      "e" +
-      (numArray[1] ? +numArray[1] + precision : precision)
-    );
+    return +(numArray[0] + "e" + (numArray[1] ? +numArray[1] + precision : precision));
   };
   return shift(Math.round(shift(number, precision, false)), precision, true);
 }
@@ -992,10 +889,7 @@ function initializeSwipe() {
 function handleGesture() {
   let hdir = touchObj.end[0] - touchObj.start[0]; //x
   let vdir = touchObj.end[1] - touchObj.start[1]; // y
-  if (
-    Math.abs(hdir) < 3 * Math.abs(vdir) ||
-    Math.abs(hdir) < touchObj.touchThreshhold
-  ) {
+  if (Math.abs(hdir) < 3 * Math.abs(vdir) || Math.abs(hdir) < touchObj.touchThreshhold) {
     console.log("not a swipe!");
   } else {
     console.log(hdir);

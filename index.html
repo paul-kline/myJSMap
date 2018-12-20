@@ -68,25 +68,25 @@
                                     class="name-col table-row">
                                     <td>
                                         <div class="name">{{place[cc.name]}}</div>
-                                        <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
-                                        <span class="disclaimer" v-if="place.Disclaimer">{{place.Disclaimer}}</span>
+                                        <span class="building" v-if="place.building">{{place[cc.bldg]}}</span>
+                                        <span class="disclaimer" v-if="place.disclaimer">{{place.Disclaimer}}</span>
 
                                     </td>
                                     <td>
                                         <span class="flex-rowm">
-                                            <span v-if="place.dd" class="tooltip">
+                                            <span v-if="place.dd == '1'" class="tooltip">
                                                 <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
                                                 <span class="tooltiptext">Dining Dollars</span>
                                             </span>
-                                            <span v-if="place.ms" class="tooltip">
+                                            <span v-if="place.ms == '1'" class="tooltip">
                                                 <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg">
                                                 <span class="tooltiptext">Meal Swipe</span>
                                             </span>
-                                            <span v-if="place.cash" class="tooltip">
+                                            <span v-if="place.cash == '1'" class="tooltip">
                                                 <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg">
                                                 <span class="tooltiptext">Cash</span>
                                             </span>
-                                            <span v-if="place.bb" class="tooltip">
+                                            <span v-if="place.bb == '1'" class="tooltip">
                                                 <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg">
                                                 <span class="tooltiptext">Beak 'em Bucks</span>
                                             </span>
@@ -114,7 +114,7 @@
                             <template v-for="place in places" v-if="place.display">
                                 <div v-bind:class="{active : place == currentSelection }" v-on:click="onTouched(place)" class="title-group w3-button w3-left-align">
                                     <div class="name">{{ place[cc.name] }}</div>
-                                    <span class="building" v-if="place.Building">{{place[cc.bldg]}}</span>
+                                    <span class="building" v-if="place.building">{{place[cc.bldg]}}</span>
                                     <span v-if="place.dd" class="tooltip">
                                         <img class="money-img" src="https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg">
                                         <span class="tooltiptext">Dining Dollars</span>
