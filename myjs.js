@@ -34,13 +34,18 @@ var app = new Vue({
         return newselection.advancedHours;
       } else {
         newselection.advancedHours = "loading...";
-        axios.get(hoursEndpoint + `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`).then(r => {
-          newselection.advancedHours = r.data;
-          app.$forceUpdate();
-          console.log("hours", r.data);
-          setTimeout(initializeAccordidowns, 200);
-          return r.data;
-        });
+        axios
+          .get(
+            hoursEndpoint +
+              `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`
+          )
+          .then(r => {
+            newselection.advancedHours = r.data;
+            app.$forceUpdate();
+            console.log("hours", r.data);
+            setTimeout(initializeAccordidowns, 200);
+            return r.data;
+          });
         return newselection.advancedHours;
       }
     }
@@ -55,20 +60,44 @@ var app = new Vue({
     },
     isNameHeader: function() {
       return {
-        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "name-header" && !this.sorter.asc,
-        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "name-header" && this.sorter.asc
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "name-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "name-header" &&
+          this.sorter.asc
       };
     },
     isDistanceHeader: function() {
       return {
-        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "distance-header" && !this.sorter.asc,
-        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "distance-header" && this.sorter.asc
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "distance-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "distance-header" &&
+          this.sorter.asc
       };
     },
     isStatusHeader: function() {
       return {
-        "sort-desc": this.sorter && this.sorter.id && this.sorter.id == "status-header" && !this.sorter.asc,
-        "sort-asc": this.sorter && this.sorter.id && this.sorter.id == "status-header" && this.sorter.asc
+        "sort-desc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "status-header" &&
+          !this.sorter.asc,
+        "sort-asc":
+          this.sorter &&
+          this.sorter.id &&
+          this.sorter.id == "status-header" &&
+          this.sorter.asc
       };
     },
     filterSize: function() {
@@ -109,7 +138,10 @@ function doSort() {
   placesSort(getSorter());
 }
 
+let loadTime = toCentral(new Date());
+
 function calcIsOpen2(place, date) {
+  console.log("in calcIsOpen2", place, date);
   // console.log("here");
   let arr = place.intervals;
   for (let i = 0; i < arr.length; i++) {
@@ -122,29 +154,31 @@ function calcIsOpen2(place, date) {
     let t = el.interval_end;
     // console.log(f, date, t);
     if (f <= date && date <= t) {
-      // console.log("I think these are in order");
-      // console.log(f, date, t);
-      // console.log("I found it!!!", el);
-      let ot = el.openingTime;
-      let ct = el.closingTime;
-      if (ot.toLowerCase().includes("close") || ct.toLowerCase().includes("close")) {
+      //found the correct interval, now find which entry in entries.
+      const dow = date.getDay();
+      let nowEntry;
+      console.log("found the correct interval!", el);
+      for (let i = 0; i < el.entries.length; i++) {
+        const inter = el.entries[i];
+        if (
+          date > inter.first_effective_date &&
+          dow >= inter.from_dow &&
+          dow <= inter.to_dow
+        ) {
+          console.log("I found the relevant hours!", inter);
+          nowEntry = inter;
+          break;
+        }
+      }
+      //if varies, isOpen is considered false. don't be lazy. say your hours.
+      if (nowEntry.closed || nowEntry.varies) {
         place.isOpen = false;
         return;
       }
-      if (ot.toLowerCase().includes("varies") || ct.toLowerCase().includes("varies")) {
-        place.isOpen = null; //we just don't know..
-        return;
-      }
-      [oh, om] = tohrmin(el.openingTime);
-      [ch, cm] = tohrmin(el.closingTime);
-      let o = oh * 60 + om;
-      let c = ch * 60 + cm;
-      let dh = date.getHours();
-      let dm = date.getMinutes();
-      let d = dh * 60 + dm;
-      console.log(place[cc.name], oh, om, ch, cm, dh, dm);
-      console.log("I think this place is:", d >= o && d < c);
-      place.isOpen = d >= o && d < c;
+      const t =
+        date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+      place.isOpen = nowEntry.oh <= t && t < nowEntry.ch;
+      return;
     }
   }
 }
@@ -155,39 +189,25 @@ function strip(date) {
   date.setSeconds(0);
   return date;
 }
-function calcIsOpens(date = new Date(), places = app.places) {
+async function calcIsOpens(date = new Date(), places = app.places) {
+  //convert to cst time since all hours are in that time.
+  //it is possible someone is viewing page from another time zone.
+  date = toCentral(date);
+  console.log("in calcIsOpen");
+  await assignedHoursPromise;
   let todayIndex = date.getDay();
-  //TODO: check if special hours apply to date.
-  // console.log("in clacisopens", places);
-  // console.log("instance ", places instanceof Array);
   places.forEach(place => {
     // console.log("in each place");
-    console.log("place is", place);
+    // console.log("place is", place);
     if (place.intervals) {
-      console.log("I think place.intervals is TRUE", place);
+      // console.log("I think place.intervals is TRUE", place);
 
       return calcIsOpen2(place, date);
     }
-    console.log("I think place.intervals is false", place);
-    let openarr = place.opens.split(",");
-    let closearr = place.closes.split(",");
-    let openstr = openarr[todayIndex];
-    let closestr = closearr[todayIndex];
-
-    place.isOpen = true; //say varies is open.
-    if (openstr.toLowerCase() == "closed" || closestr.toLowerCase() == "closed") {
-      place.isOpen = false;
-    } else {
-      [oh, om] = tohrmin(openstr);
-      [ch, cm] = tohrmin(closestr);
-      let o = oh * 60 + om;
-      let c = ch * 60 + cm;
-      let dh = date.getHours();
-      let dm = date.getMinutes();
-      let d = dh * 60 + dm;
-      // console.log(place, oh, om, ch, cm, dh, dm);
-      place.isOpen = d >= o && d < c;
-    }
+    console.log(
+      "I think place.intervals is false",
+      JSON.stringify(place.intervals)
+    );
   });
 }
 function tohrmin(str) {
@@ -248,7 +268,9 @@ function initMap() {
   });
   //set up context menu:
   app.d = document.getElementById("content");
-  var contextMenu = google.maps.event.addListener(map, "rightclick", function(event) {
+  var contextMenu = google.maps.event.addListener(map, "rightclick", function(
+    event
+  ) {
     handleContextMenu(event, map);
   });
 
@@ -325,7 +347,10 @@ function definePopupClass() {
   Popup.prototype.draw = function() {
     var divPosition = this.getProjection().fromLatLngToDivPixel(this.position);
     // Hide the popup when it is far out of view.
-    var display = Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000 ? "block" : "none";
+    var display =
+      Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
+        ? "block"
+        : "none";
 
     if (display === "block") {
       this.anchor.style.left = divPosition.x + "px";
@@ -341,19 +366,42 @@ function definePopupClass() {
     var anchor = this.anchor;
     anchor.style.cursor = "auto";
 
-    ["click", "dblclick", "contextmenu", "wheel", "mousedown", "touchstart", "pointerdown"].forEach(function(event) {
+    [
+      "click",
+      "dblclick",
+      "contextmenu",
+      "wheel",
+      "mousedown",
+      "touchstart",
+      "pointerdown"
+    ].forEach(function(event) {
       anchor.addEventListener(event, function(e) {
         e.stopPropagation();
       });
     });
   };
 }
+function toCentral(date) {
+  return new Date(
+    date.toLocaleString("en-US", { timeZone: "America/Chicago" })
+  );
+}
 function toQueryDate(date) {
-  return date.getFullYear() + "-" + two(date.getMonth() + 1) + "-" + two(date.getDay());
+  return (
+    date.getFullYear() +
+    "-" +
+    two(date.getMonth() + 1) +
+    "-" +
+    two(date.getDate())
+  );
 }
 function genmapControls() {
-  app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById("mapcontrols"));
-  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("recenter"));
+  app.map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(
+    document.getElementById("mapcontrols")
+  );
+  app.map.controls[google.maps.ControlPosition.TOP_LEFT].push(
+    document.getElementById("recenter")
+  );
 }
 function affixToTop(map) {
   let el = document.getElementById("map");
@@ -376,7 +424,7 @@ async function maploaded(map) {
     markersWontHide: true,
     basicFormatEvents: true
   });
-  await placesPromise;
+  await assignedHoursPromise;
   loadIntoMap(map, fooddata)
     .then(calcIsOpens)
     .then(() => {
@@ -397,46 +445,57 @@ function computeAllLocationsTo(latlng) {
   let lat = latlng.lat;
   let lng = latlng.lng;
 }
-let currentHoursPromise = axios.get(hoursEndpoint + "?now").then(r => {
-  let d = r.data;
-  // console.log("efijefije");
-  fooddata.forEach(e => {
-    e.directionsUrl = buildDirectionsLink(e);
-    e.display = true;
-    d.forEach((er, i) => {
-      // console.log("eifjeifjefj", e[cc.name], er.name);
-      if (er.name == e[cc.hname]) {
-        console.log("found", e[cc.hname], er.name);
-        console.log(er);
-        e.currentHours = er;
-        //intervals should already be in order.
-        for (let g = 0; g < er.era.intervals.length; g++) {
-          let ec = er.era.intervals[g];
-          let strH = "";
-          let op = ec.openingTime.trim();
-          let opL = op.toLowerCase();
-          if (opL.includes("close") || opL.includes("varies")) {
-            strH = op;
-          } else {
-            strH = opL.replace(/ /g, "");
-          }
+function toHumanTime(str) {
+  //str is of form "hh:mm:ss"
+  let [h, m, s] = str.split(":").map(x => parseInt(x));
+  let suffix = "am";
+  if (h > 12) {
+    suffix = "pm";
+    h -= 12;
+  }
+  return h + ":" + two(m) + suffix;
+}
+// let currentHoursPromise = axios.get(hoursEndpoint + "?now").then(r => {
+//   let d = r.data;
+//   // console.log("efijefije");
+//   fooddata.forEach(e => {
+//     e.directionsUrl = buildDirectionsLink(e);
+//     e.display = true;
+//     d.forEach((er, i) => {
+//       // console.log("eifjeifjefj", e[cc.name], er.name);
+//       if (er.name == e[cc.hname]) {
+//         console.log("found", e[cc.hname], er.name);
+//         console.log(er);
+//         e.currentHours = er;
+//         //intervals should already be in order.
+//         for (let g = 0; g < er.era.intervals.length; g++) {
+//           let ec = er.era.intervals[g];
+//           let strH = "";
+//           let op = ec.openingTime.trim();
+//           let opL = op.toLowerCase();
+//           if (opL.includes("close") || opL.includes("varies")) {
+//             strH = op;
+//           } else {
+//             strH = opL.replace(/ /g, "");
+//           }
 
-          let cp = ec.closingTime.trim();
-          let cpL = cp.toLowerCase();
-          if (cpL.includes("close") || cpL.includes("varies")) {
-            // strH += cp; //leave it be.
-          } else {
-            strH += "-" + cpL.replace(/ /g, "");
-          }
+//           let cp = ec.closingTime.trim();
+//           let cpL = cp.toLowerCase();
+//           if (cpL.includes("close") || cpL.includes("varies")) {
+//             // strH += cp; //leave it be.
+//           } else {
+//             strH += "-" + cpL.replace(/ /g, "");
+//           }
 
-          e["hours" + (g + 1)] = ec.fromDay + (ec.toDay ? "-" + ec.toDay : "") + ":" + strH;
-        }
-      }
-      // e.hours1 = er
-    });
-  });
-  return d;
-});
+//           e["hours" + (g + 1)] =
+//             ec.fromDay + (ec.toDay ? "-" + ec.toDay : "") + ":" + strH;
+//         }
+//       }
+//       // e.hours1 = er
+//     });
+//   });
+//   return d;
+// });
 
 let today = new Date();
 today.setHours(0);
@@ -448,10 +507,9 @@ async function loadIntoMap(map, results) {
   //need to wait to get current hours.
   let hours;
   try {
-    await placesPromise; //currentHoursPromise;
-    await hoursPromise;
+    await assignedHoursPromise;
     hours = currentHours;
-    console.log("okay, here are the hours", hours);
+    console.log("loadintomap, here are the hours", hours);
   } catch (e) {
     console.log("oh nooooo!!!!!!!!");
     console.log(e);
@@ -465,7 +523,8 @@ async function loadIntoMap(map, results) {
     let marker = new google.maps.Marker({
       position: latLng,
       // map: map,
-      title: cur.name + (cur.building.length > 0 ? " (" + cur.building + ")" : ""),
+      title:
+        cur.name + (cur.building.length > 0 ? " (" + cur.building + ")" : ""),
       zIndex: 3,
       label: cur.lbl
       //   ,
@@ -510,7 +569,13 @@ function filterStateChange(places = app.places) {
     let mustmsReq = mustms ? e.ms == "1" : true;
     let mustddReq = mustdd ? e.dd == "1" : true;
 
-    e.display = openReq && retailReq && mustbbReq && mustCashReq && mustmsReq && mustddReq;
+    e.display =
+      openReq &&
+      retailReq &&
+      mustbbReq &&
+      mustCashReq &&
+      mustmsReq &&
+      mustddReq;
 
     if (e.display) {
       if (!e.marker.map) {
@@ -559,10 +624,42 @@ function onTouched(place, fromMap = false) {
 function scrollToTop() {
   document.getElementsByClassName("info")[0].scrollTo(0, 0);
 }
-function buildHoursList(obj) {
-  let hours = "";
-  let f = x => (x ? `<li>${x}</li>` : "");
+//obj = place
+function intervalFor(place, date) {
+  // date = toCentral(date);
+  let arr = place.intervals;
+  for (let i = 0; i < arr.length; i++) {
+    const el = arr[i];
+    let f = el.interval_start;
+    let t = el.interval_end;
+    if (f <= date && date <= t) {
+      return el;
+    }
+  }
+  return null;
+}
+const dows = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
+function buildHoursList(place) {
+  const interval = intervalFor(place, loadTime);
+  if (!interval) {
+    return "No current hours available";
+  }
 
+  let hours = `<div>${interval.interval_name}</div>`;
+  let f = x => (x ? `<li>${x}</li>` : "");
+  interval.entries.forEach((e, i) => {
+    let h = "";
+    h += `${dows[e.from_dow]}-${dows[e.to_dow]}: `;
+    if (e.closed) {
+      h += "closed";
+    } else if (e.varies) {
+      h += "varies";
+    } else {
+      h += e.open_h + "-" + e.close_h;
+    }
+    hours += f(h);
+  });
+  return hours;
   hours += f(obj.hours1);
   hours += f(obj.hours2);
   hours += f(obj.hours3);
@@ -574,9 +671,17 @@ function buildHoursList(obj) {
   }
 }
 function buildDirectionsLink(obj) {
-  let lnk = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(obj[cc.name] + " " + (obj[cc.bldg] ? obj[cc.bldg] + " " : "") + obj[cc.street] + " " + obj[cc.city])}`;
+  let lnk = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    obj[cc.name] +
+      " " +
+      (obj[cc.bldg] ? obj[cc.bldg] + " " : "") +
+      obj[cc.street] +
+      " " +
+      obj[cc.city]
+  )}`;
   return lnk;
 }
+//obj = place
 function buildPopup(obj) {
   let hours = buildHoursList(obj);
   let phone = "";
@@ -593,19 +698,26 @@ function buildPopup(obj) {
       <div id="bodyContent">
       <div><a href="${obj.directionsUrl}" target="_blank">Directions</a></div>
       ${phone}
-         <strong>Hours</strong>${obj.currentHours ? "" : '<div style="font-style:italic"> *may not be accurate</div>'}
+         <strong>Hours</strong>
           ${hours}      
       </div>
     </div>
     `;
 }
 function iconisize(addr) {
-  return new google.maps.MarkerImage(addr, null, null, null, new google.maps.Size(20, 20));
+  return new google.maps.MarkerImage(
+    addr,
+    null,
+    null,
+    null,
+    new google.maps.Size(20, 20)
+  );
 }
 
 function setDistancesFrom(latlng) {
   app.places.forEach(el => {
-    el.distance = calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
+    el.distance =
+      calcCrowDistKM(latlng.lat, latlng.lng, el.lat, el.lng) * 0.621371;
   });
 
   if (app.sorter && app.sorter.id == "distance-header") {
@@ -636,9 +748,15 @@ function _fcreator(asc, prop) {
   let numcmp = (x, y) => x - y;
 
   if (asc) {
-    return (x, y) => (typeof x[prop] == "string" ? strcmp(y[prop], x[prop]) : numcmp(y[prop], x[prop]));
+    return (x, y) =>
+      typeof x[prop] == "string"
+        ? strcmp(y[prop], x[prop])
+        : numcmp(y[prop], x[prop]);
   } else {
-    return (x, y) => (typeof x[prop] == "string" ? strcmp(x[prop], y[prop]) : numcmp(x[prop], y[prop]));
+    return (x, y) =>
+      typeof x[prop] == "string"
+        ? strcmp(x[prop], y[prop])
+        : numcmp(x[prop], y[prop]);
   }
 }
 
@@ -697,7 +815,12 @@ function locateUser(map) {
   }
 }
 function createUserMarker(map, pos) {
-  let markerImage = new google.maps.MarkerImage("https://paul-kline.github.io/myJSMap/images/curloc.svg", new google.maps.Size(48, 48), new google.maps.Point(0, 0), new google.maps.Point(24, 24));
+  let markerImage = new google.maps.MarkerImage(
+    "https://paul-kline.github.io/myJSMap/images/curloc.svg",
+    new google.maps.Size(48, 48),
+    new google.maps.Point(0, 0),
+    new google.maps.Point(24, 24)
+  );
   let marker = new google.maps.Marker({
     position: pos,
     map: map,
@@ -762,7 +885,10 @@ function computeIntervalTitle(interval) {
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
   return `
-  (${fromdd.toLocaleDateString("en-US", options)}-${todd.toLocaleDateString("en-US", options)})`;
+  (${fromdd.toLocaleDateString("en-US", options)}-${todd.toLocaleDateString(
+    "en-US",
+    options
+  )})`;
 }
 function initializeAccordidowns() {
   console.log("initing downs");
@@ -790,20 +916,28 @@ function downAccClick() {
 }
 let icons = {
   //dining dollars
-  dd: "https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg",
+  dd:
+    "https://union.ku.edu/sites/union.ku.edu/files/images/general/cuisine-cash.svg",
   //meal swipe
-  ms: "https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg",
+  ms:
+    "https://union.ku.edu/sites/union.ku.edu/files/images/general/meal-swipe.svg",
   //cash
   cash: "https://union.ku.edu/sites/union.ku.edu/files/images/general/cash.svg",
   //beak -em bucks
-  bb: "https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg"
+  bb:
+    "https://union.ku.edu/sites/union.ku.edu/files/images/general/beak-em-bucks.svg"
 };
 
 function calcCrowDistKM(lat1, lon1, lat2, lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2 - lat1); // deg2rad below
   var dLon = deg2rad(lon2 - lon1);
-  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   var d = R * c; // Distance in km
   return d;
@@ -856,7 +990,11 @@ function round(number, precision) {
       precision = -precision;
     }
     var numArray = ("" + number).split("e");
-    return +(numArray[0] + "e" + (numArray[1] ? +numArray[1] + precision : precision));
+    return +(
+      numArray[0] +
+      "e" +
+      (numArray[1] ? +numArray[1] + precision : precision)
+    );
   };
   return shift(Math.round(shift(number, precision, false)), precision, true);
 }
@@ -899,7 +1037,10 @@ function initializeSwipe() {
 function handleGesture() {
   let hdir = touchObj.end[0] - touchObj.start[0]; //x
   let vdir = touchObj.end[1] - touchObj.start[1]; // y
-  if (Math.abs(hdir) < 3 * Math.abs(vdir) || Math.abs(hdir) < touchObj.touchThreshhold) {
+  if (
+    Math.abs(hdir) < 3 * Math.abs(vdir) ||
+    Math.abs(hdir) < touchObj.touchThreshhold
+  ) {
     console.log("not a swipe!");
   } else {
     console.log(hdir);

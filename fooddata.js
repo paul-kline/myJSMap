@@ -26,39 +26,54 @@ let cc = {
 };
 
 let center = { center: { lat: 38.9559656238095, lng: -95.2513079666667 } };
-let placesPromise = fetch("https://union.pauliankline.com/places.php?alldining=true")
-  .then(function(response) {
-    return response.json();
-  })
-  .then(places => {
-    console.log("got places", places);
-    fooddata = places;
+
+let loadPlacesPromise = fetch(
+  "https://union.pauliankline.com/places.php?alldining=true"
+)
+  .then(response => response.json())
+  .then(x => {
+    console.log("got places", x);
+    fooddata = x;
+    return x;
   });
-let hoursPromise = fetch("https://union.pauliankline.com/queryhours.php?alldining=true&date=" + toQueryDate(new Date()))
-  .then(function(response) {
-    // console.log("hours promise response:", response);
-    return response.json();
-  })
-  .then(hours => {
-    console.log("got hours", hours);
-    currentHours = hours;
-    assignHours(fooddata, currentHours);
+
+let currentHoursPromise = fetch(
+  "https://union.pauliankline.com/queryhours.php?alldining=true&date=" +
+    toQueryDate(toCentral(new Date()))
+)
+  .then(response => response.json())
+  .then(x => {
+    console.log("got hours", x);
+    currentHours = x;
+    return x;
   });
-async function assignHours(places, hours) {
-  await placesPromise; //wait for places to have loaded.
-  console.log("assigning!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+let assignedHoursPromise = new Promise((resolve, reject) => {
+  Promise.all([loadPlacesPromise, currentHoursPromise]).then(
+    ([places, hours]) => {
+      let pl = assignHours(places, hours);
+      console.log("hours assigned. new places are:", places);
+      resolve(pl);
+    }
+  );
+});
+
+/*
+This function assigns the hours (each having a place_id)
+to the respective place as an 'intervals' property.
+as more hours are retrieved, more intervals can be
+add to the place property.
+*/
+function assignHours(places, hours) {
+  console.log("in assignHours");
   places.forEach(p => {
-    let hh = hours
-      .filter(h => h.place_id == p.place_id)
-      .map(h => {
-        h.from_dow = parseInt(h.from_dow);
-        h.to_dow = parseInt(h.to_dow);
-        return h;
-      });
+    let hh = hours.filter(h => h.place_id == p.place_id);
     let intervals = createIntervalsForPlace(hh);
     p.intervals = intervals;
+    p.display = true;
   });
   console.log("assigned", places);
+  return places;
 }
 function createIntervalsForPlace(placeHours) {
   let groupedByIntervalNames = groupBy(placeHours, "interval_name");
@@ -67,13 +82,45 @@ function createIntervalsForPlace(placeHours) {
   for (let intervalName in groupedByIntervalNames) {
     let ints = groupedByIntervalNames[intervalName];
     let fst = ints[0];
-    let interval = { interval_name: intervalName, interval_start: new Date(fst.interval_start + "cst"), interval_end: new Date(fst.interval_end + "cst") };
+    let interval = {
+      interval_name: intervalName,
+      interval_start: new Date(fst.interval_start + "cst"),
+      interval_end: new Date(fst.interval_end + "cst")
+    };
     interval.entries = ints.map(i => {
-      return { first_effective_date: new Date(i.first_effective_date + "cst"), closed: i.closed, varies: i.varies, open: i.open, close: i.close, from_dow: i.from_dow, to_dow: i.to_dow };
+      i.first_effective_date = new Date(i.first_effective_date + "cst");
+      i.from_dow = parseInt(i.from_dow);
+      i.to_dow = parseInt(i.to_dow);
+      i = setTimes(i);
+      return i;
     });
     intervals.push(interval);
   }
   return intervals;
+}
+function setTimes(i) {
+  if (i.varies || i.closed) {
+    return i;
+  }
+  //str is of form "hh:mm:ss"
+  let [oh, om, os] = i.open.split(":").map(x => parseInt(x));
+  let [ch, cm, cs] = i.close.split(":").map(x => parseInt(x));
+  i.oh = oh + om / 60 + os / 3600;
+  i.ch = ch + cm / 60 + cs / 3600;
+  let osuffix = "am";
+  if (oh > 12) {
+    osuffix = "pm";
+    oh -= 12;
+  }
+  i.open_h = oh + ":" + two(om) + osuffix;
+  let csuffix = "am";
+  if (ch > 12) {
+    csuffix = "pm";
+    ch -= 12;
+  }
+  i.close_h = ch + ":" + two(cm) + csuffix;
+
+  return i;
 }
 function groupBy(xs, key) {
   return xs.reduce(function(rv, x) {
