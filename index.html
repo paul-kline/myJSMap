@@ -154,10 +154,14 @@
                             <div v-if="currentSelectionHasPublishedMenues" class="">
                                 <div>Published Menus:</div>
                                 <div class="w3-leftbar w3-margin">
-                                    <template class="menu" v-for="item in cc.menus">
-                                        <div class=" w3-margin" v-if="currentSelection[item]">
-                                            <a v-bind:href="currentSelection[item]" target="_blank">{{item == "menu"? "view menu" : item}}</a>
-                                        </div>
+                                    <template v-if="menus.find(m => m.name == currentSelection.name)">
+                                       
+                                            <template v-for="(value, key) in menus.find(m => m.name == currentSelection.name)" :key="value">
+                                                    <div  v-if="key != 'name' && key != 'searchable'" class=" w3-margin">
+                                                       <a v-bind:href="value" target="_blank">{{key == "menu"? "view menu" : key}}</>
+                                                    </div>
+                                            </template>
+                                            
                                     </template>
                                 </div>
                             </div>
@@ -201,23 +205,25 @@
                         </div>
                     </div>
                     <div v-if="currentSelection && !closed" id="Hours" class="w3-container tab-contents" style="display:none">
-                        <div v-if="currentSelection.currentHours">
+                        <div v-if="currentSelection.intervals">
                             <div class="flex-column">
 
-                                <template v-for="item in currentSelection.advancedHours.eras">
+                                <template v-for="item in currentSelection.intervals">
                                     <div style="height:3em; " class="accordion-down flex-row-b w3-margin w3-round w3-card-2 w3-bdtnw  w3-left-align w3-black">
                                         <span class="flex-row-b" style="width:90%">
-                                            <div>{{item.name}}</div>
+                                            <div>{{item.interval_name}}</div>
                                             <div>{{computeIntervalTitle(item)}}</div>
                                         </span>
                                         <!-- {{item.name}} ({{item.from.date.split(" ")[1]}}/{{item.from.date.split(" ")[2]}}-{{item.to.date.split(" ")[0]}}) -->
                                     </div>
                                     <div class="panel w3-panel">
-                                        <div v-for="inn in item.intervals" class="w3-border-red">
-                                            <span style="font-weight: bold">
-                                                <span>{{inn.fromDay}}</span>
-                                                <span v-if="inn.toDay">- {{inn.toDay}}</span>
-                                            </span>: {{inn.openingTime}} - {{inn.closingTime}}
+                                        <div v-for="inn in item.entries" class="w3-border-red">
+                                            <span v-if="item.entries.length > 1" style="font-weight: bold">
+                                                <span>{{dows[inn.from_dow]}}</span>
+                                                <span v-if="inn.to_dow && inn.to_dow != inn.from_dow">- {{dows[inn.to_dow]}}</span>
+                                            : </span> <span v-if="inn.closed">Closed</span>
+                                            <span v-else-if="inn.varies">Varies</span>
+                                            <span v-else>{{inn.open_h}} - {{inn.close_h}}</span> <span>(effective:{{prettyDate(inn.first_effective_date)}})</span>
                                         </div>
                                     </div>
                                 </template>

@@ -1,4 +1,5 @@
-let hoursEndpoint = "https://dept.ku.edu/~newunion/diningmaps/hours.php";
+// let hoursEndpoint = "https://dept.ku.edu/~newunion/diningmaps/hours.php";
+let hoursEndpoint = "https://union.pauliankline.com/queryhours.php";
 
 var app = new Vue({
   el: "#app",
@@ -24,25 +25,36 @@ var app = new Vue({
         console.log("nothing selected");
         return "Nothing Selected";
       }
-      if (!newselection.currentHours) {
-        console.log("cannot compute. currentHours is not known.");
-        return "unknown";
-      }
-      if (newselection.advancedHours) {
+      // if (!newselection.currentHours) {
+      //   console.log("cannot compute. currentHours is not known.");
+      //   return "unknown";
+      // }
+      if (newselection.intervals.length > 1) {
         console.log("already found them!");
         setTimeout(initializeAccordidowns, 200);
         return newselection.advancedHours;
       } else {
         newselection.advancedHours = "loading...";
+        console.log("getting advanced hours!");
         axios
           .get(
             hoursEndpoint +
-              `?next=4&name=${encodeURIComponent(newselection[cc.hname])}`
+              `?date=${toQueryDate(loadTime)}&place_id=${
+                newselection.place_id
+              }&advanced=1`
           )
           .then(r => {
-            newselection.advancedHours = r.data;
+            console.log(
+              "query was: ",
+              hoursEndpoint +
+                `?date=${toQueryDate(loadTime)}&place_id=${
+                  newselection.place_id
+                }&advanced=1`
+            );
+            appendIntervals(r.data, newselection);
+            // newselection.advancedHours = r.data;
             app.$forceUpdate();
-            console.log("hours", r.data);
+            console.log("ADVANCED hours", r.data);
             setTimeout(initializeAccordidowns, 200);
             return r.data;
           });
@@ -104,10 +116,8 @@ var app = new Vue({
       return this.places.filter(x => x.display).length;
     },
     currentSelectionHasPublishedMenues: function() {
-      for (const key in cc.menus) {
-        // console.log("key", key);
-        if (this.currentSelection[cc.menus[key]]) return true;
-      }
+      const sel = menus.find(m => m.name == this.currentSelection.name);
+      if (sel && Object.keys(sel).length > 1) return true;
       return false;
     }
   }
@@ -127,7 +137,17 @@ function onSort(elem) {
   };
   doSort();
 }
+function appendIntervals(newIntervals, place) {
+  const existingIntervalName = place.intervals.map(x => x.interval_name);
 
+  const ints = createIntervalsForPlace(newIntervals).filter(
+    i => existingIntervalName.find(x => x == i.interval_name) == undefined
+  );
+  console.log("hey, new intervals here:", ints);
+  ints.forEach(i => {
+    place.intervals.push(i);
+  });
+}
 function getSorter() {
   if (app.sorter.id == "name-header") return nameF(app.sorter.asc);
   if (app.sorter.id == "status-header") return statusF(app.sorter.asc);
@@ -649,11 +669,17 @@ function buildHoursList(place) {
   let f = x => (x ? `<li>${x}</li>` : "");
   interval.entries.forEach((e, i) => {
     let h = "";
-    h += `${dows[e.from_dow]}-${dows[e.to_dow]}: `;
+    if (interval.entries.length > 1) {
+      h += dows[e.from_dow];
+      if (e.from_dow != e.to_dow) {
+        h += `-${dows[e.to_dow]}`;
+      }
+      h += `: `;
+    }
     if (e.closed) {
-      h += "closed";
+      h += "Closed";
     } else if (e.varies) {
-      h += "varies";
+      h += "Varies";
     } else {
       h += e.open_h + "-" + e.close_h;
     }
@@ -688,11 +714,25 @@ function buildPopup(obj) {
   if (obj[cc.phone]) {
     phone = `<div><a href="tel:${obj[cc.phone]}">${obj[cc.phone]}</a></div>`;
   }
+  let namepart = "";
+  if (obj.name.length + obj.building.length > 30) {
+    //two rows please.
+    namepart = `<div id="firstHeading" class="popup-title">${obj.name}</div>
+    <div class="popup-bldg">${obj[cc.bldg]}</div>`;
+  } else {
+    //one row please.
+    namepart = `<div><span class= "popup-title">${
+      obj.name
+    }</span> <span class="popup-bldg">${obj[cc.bldg]} </span> </div>`;
+  }
+
+  if (!obj.directionsUrl) {
+    obj.directionsUrl = buildDirectionsLink(obj);
+  }
   return `
    <div id="content" style="z-index:5">
      <div id="siteNotice"></div>
-     <div id="firstHeading" class="popup-title">${obj.name}</div>
-     <div class="popup-bldg">${obj[cc.bldg]}</div>
+    ${namepart}
     <div class="popup-street">${obj[cc.street]}</div>
     <div class="popup-city">${obj[cc.city]}</div>
       <div id="bodyContent">
@@ -878,10 +918,15 @@ function initializeAccordions() {
   // initializeAccordidowns();
 }
 
+function prettyDate(date) {
+  let options = { month: "short", day: "numeric" };
+  let d = new Date(date);
+  return d.toLocaleDateString("en-US", options);
+}
 function computeIntervalTitle(interval) {
   let options = { month: "short", day: "numeric" };
-  let fromd = interval.from.date; //.split(" ")[0];
-  let tod = interval.to.date; //.split(" ")[0];
+  let fromd = interval.interval_start; //.split(" ")[0];
+  let tod = interval.interval_end; //.split(" ")[0];
   let fromdd = new Date(fromd);
   let todd = new Date(tod);
   return `

@@ -24,6 +24,124 @@ let cc = {
     "Sunflower BBQ Co. Breakfast Menu"
   ]
 };
+const menus = [
+  {
+    name: "Anschutz Jay Break",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci"
+  },
+  {
+    name: "Burge Roasterie",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788"
+  },
+  {
+    name: "Courtside Café",
+    searchable: "DEBR COURTSIDE CAFE",
+    Brellas:
+      "https://issuu.com/kumemorialunion/docs/web-ready_brellas_fa16?e=26059554/38193480",
+    "Prairie Fire Grill":
+      "https://issuu.com/kumemorialunion/docs/courtsideprairiefiregrillmenu?e=26059554/38749545",
+    "Sunglower BBQ Co.":
+      "https://issuu.com/kumemorialunion/docs/courtsidesunflowerbbqmenu?e=26059554/38749790",
+    "Sunflower BBQ Co. Breakfast Menu":
+      "https://issuu.com/kumemorialunion/docs/courtsidesunflowerbbqbreakfastdigit?e=26059554/38750007"
+  },
+  {
+    name: "DeBruce Roasterie",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788"
+  },
+  {
+    name: "Engineering Commons Jay Break",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci"
+  },
+  {
+    name: "Impromptu Café",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/impromptu_web_menu_sp16?e=26059554/38226212"
+  },
+  {
+    name: "JRP Jay Break",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu"
+  },
+  {
+    name: "Mortar & Pestle Café",
+    searchable: "PHAR MORTAR &amp; PESTLE",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_freshfusion_menu_boards_fa17?e=26059554/52397010"
+  },
+  { name: "Mrs. E's", searchable: "EKDAHL DINING" },
+  { name: "North College Café", searchable: "NORTH COLLEGE CAFE" },
+  {
+    name: "Pharmacy Roasterie",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788"
+  },
+  { name: "South Dining Commons", searchable: "SOUTH DINING COMMONS" },
+  { name: "Southside" },
+  {
+    name: "Strong Hall Jay Break",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu"
+  },
+  {
+    name: "The Bus Stop",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewcappuci"
+  },
+  {
+    name: "The Market",
+    searchable: "UN MARKET",
+    "Garden Gourmet":
+      "https://issuu.com/kumemorialunion/docs/garden_gourmet_menu_fa16?e=26059554/38224471",
+    Brellas:
+      "https://issuu.com/kumemorialunion/docs/web-ready_brellas_fa16?e=26059554/38193480",
+    "Serrano's":
+      "https://issuu.com/kumemorialunion/docs/serranos_menu_fa16?e=26059554/38224237",
+    "The Press":
+      "https://issuu.com/kumemorialunion/docs/panini_menu_fa16?e=26059554/38223962",
+    "Early Bird Breakfast Menu":
+      "https://issuu.com/kumemorialunion/docs/early_bird_menu_fa16?e=26059554/38223750",
+    "Boulevard Grill":
+      "https://issuu.com/kumemorialunion/docs/boulevard_grill_menu_fa16?e=26059554/38222092",
+    "Za Pizza":
+      "http://issuu.com/kumemorialunion/docs/web-ready_za_market_menu_fa16?e=26059554/38193033"
+  },
+  {
+    name: "The Studio Grill",
+    menu:
+      "http://issuu.com/kumemorialunion/docs/studio_-_menu_boards_fa16?e=26059554/38391583"
+  },
+  {
+    name: "The Underground",
+    "Garden Gourmet":
+      "https://issuu.com/kumemorialunion/docs/garden_gourmet_menu_fa16?e=26059554/38224471",
+    Brellas:
+      "https://issuu.com/kumemorialunion/docs/web-ready_brellas_fa16?e=26059554/38193480",
+    "Za Pizza":
+      "https://issuu.com/kumemorialunion/docs/web-ready_za_market_menu_fa16?e=26059554/38193033",
+    "Café Spice":
+      "https://union.ku.edu/sites/union.drupal.ku.edu/files/docs/menus/CafeSpice_FullMenuBoard.pdf"
+  },
+  {
+    name: "Union Roasterie",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788"
+  },
+  {
+    name: "Watson Jay Break",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/kuds_jaybreak_menu_posternewnocappu"
+  },
+  {
+    name: "Wescoe Roasterie",
+    menu:
+      "https://issuu.com/kumemorialunion/docs/the_roasterie?e=26059554/38796788"
+  }
+];
 
 let center = { center: { lat: 38.9559656238095, lng: -95.2513079666667 } };
 
@@ -94,9 +212,32 @@ function createIntervalsForPlace(placeHours) {
       i = setTimes(i);
       return i;
     });
+    interval.entries = consolidate(interval.entries);
     intervals.push(interval);
   }
   return intervals;
+}
+function consolidate(entries) {
+  let result = [];
+  for (let i = 0; i < entries.length; i++) {
+    let e = entries[i];
+    while (i < entries.length - 1) {
+      const ee = entries[i + 1];
+      if (
+        (e.closed && ee.closed) ||
+        (e.varies && ee.varies) ||
+        (ee.open_h == e.open_h && ee.close_h == e.close_h)
+      ) {
+        //it's the same!
+        e.to_dow = ee.to_dow;
+      } else {
+        break;
+      }
+      i++;
+    }
+    result.push(e);
+  }
+  return result;
 }
 function setTimes(i) {
   if (i.varies || i.closed) {
