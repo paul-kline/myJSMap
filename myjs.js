@@ -161,15 +161,15 @@ function doSort() {
 let loadTime = toCentral(new Date());
 
 function calcIsOpen2(place, date) {
-  console.log("in calcIsOpen2", place, date);
-  // console.log("here");
+  // console.log("in calcIsOpen2", place, date);
+  // console.log(
+  //   "finding isOpen for:",
+  //   place.name,
+  //   "intervals:" + place.intervals.length
+  // );
   let arr = place.intervals;
   for (let i = 0; i < arr.length; i++) {
     const el = arr[i];
-    // let f = new Date(el.from);
-    // let t = new Date(el.to);
-    // f = strip(f);
-    // t = strip(t);
     let f = el.interval_start;
     let t = el.interval_end;
     // console.log(f, date, t);
@@ -177,18 +177,33 @@ function calcIsOpen2(place, date) {
       //found the correct interval, now find which entry in entries.
       const dow = date.getDay();
       let nowEntry;
-      console.log("found the correct interval!", el);
+      // console.log("found the correct interval for " + place.name, el);
       for (let i = 0; i < el.entries.length; i++) {
         const inter = el.entries[i];
-        if (
-          date > inter.first_effective_date &&
-          dow >= inter.from_dow &&
-          dow <= inter.to_dow
-        ) {
-          console.log("I found the relevant hours!", inter);
+
+        if (date >= inter.first_effective_date) {
+          /*
+          this incremental assigning is to handle scenarios where
+          an entry between days gets consolidated around the horn.
+          For example, a monday-tuesday may actually mean the following tuesday
+          if aggressive consolidation is possible (over breaks, for example).
+          
+          This works because the results from the server are sorted ascending by effective date.
+          Therefore, the closest effective date will show up last and the correct inter will
+          be selected. This makes the isbetween check merely an optimization.
+          */
           nowEntry = inter;
-          break;
+          if (isBetween(dow, inter.from_dow, inter.to_dow)) {
+            break;
+          }
         }
+      }
+
+      if (!nowEntry) {
+        console.log(
+          "now entry was never found!!!" + place.name,
+          JSON.stringify(place.intervals)
+        );
       }
       //if varies, isOpen is considered false. don't be lazy. say your hours.
       if (nowEntry.closed || nowEntry.varies) {
@@ -201,6 +216,9 @@ function calcIsOpen2(place, date) {
       return;
     }
   }
+}
+function isBetween(d, f, t) {
+  return d == f || d == t || (f < t ? f < d && d < t : !(f < d && d < t));
 }
 function strip(date) {
   date.setHours(0);
