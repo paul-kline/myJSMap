@@ -54,7 +54,7 @@ var app = new Vue({
             appendIntervals(r.data, newselection);
             // newselection.advancedHours = r.data;
             app.$forceUpdate();
-            console.log("ADVANCED hours", r.data);
+            // console.log("ADVANCED hours", r.data);
             setTimeout(initializeAccordidowns, 200);
             return r.data;
           });
@@ -552,7 +552,7 @@ async function loadIntoMap(map, results) {
     console.log("oh nooooo!!!!!!!!");
     console.log(e);
   }
-
+  console.log("H");
   for (let i = 0; i < results.length; i++) {
     let cur = results[i];
     let latLng = new google.maps.LatLng(cur.lat, cur.lng);
@@ -669,7 +669,8 @@ function intervalFor(place, date) {
   for (let i = 0; i < arr.length; i++) {
     const el = arr[i];
     let f = el.interval_start;
-    let t = el.interval_end;
+    let t = new Date(el.interval_end.getTime());
+    t.setDate(t.getDate() + 1);
     if (f <= date && date <= t) {
       return el;
     }
@@ -680,6 +681,8 @@ const dows = ["Sun", "Mon", "Tues", "Weds", "Thurs", "Fri", "Sat"];
 function buildHoursList(place) {
   const interval = intervalFor(place, loadTime);
   if (!interval) {
+    console.log("loadtime:", loadTime);
+    console.log("no hours available?", JSON.stringify(interval));
     return "No current hours available";
   }
 
